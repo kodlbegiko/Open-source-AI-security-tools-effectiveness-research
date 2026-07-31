@@ -18,10 +18,12 @@ class PipelineTests(unittest.TestCase):
             one = json.loads((Path(first) / "summary.json").read_text())
             two = json.loads((Path(second) / "summary.json").read_text())
             self.assertEqual(one, two)
-            self.assertEqual(one["total"], 450)
-            self.assertEqual(one["splits"]["confirmatory"], 240)
-            self.assertEqual(one["splits"]["out-of-distribution"], 90)
-            self.assertEqual(one["labels"], {"SAFE": 225, "UNSAFE": 225})
+            self.assertEqual(one["total"], 780)
+            self.assertEqual(one["splits"]["confirmatory"], 480)
+            self.assertEqual(one["splits"]["out-of-distribution"], 180)
+            self.assertEqual(one["languages"], {"en": 260, "zh-TW": 260, "mixed": 260})
+            self.assertEqual(one["labels"], {"SAFE": 390, "UNSAFE": 390})
+            self.assertEqual(one["manifest_sha256"], "38059b47ea3b8217df38b90a4525286a18ca37b7bc136cfbbce5227aa6f54e27")
 
     def test_baselines_emit_one_row_per_case(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
@@ -34,7 +36,7 @@ class PipelineTests(unittest.TestCase):
                 "--benchmark-root", str(benchmark), "--output-dir", str(normalized)
             ], check=True)
             for path in normalized.glob("*.jsonl"):
-                self.assertEqual(len(path.read_text().splitlines()), 450)
+                self.assertEqual(len(path.read_text().splitlines()), 780)
 
     def test_gitleaks_adapter_maps_file_to_block(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
