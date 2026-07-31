@@ -115,13 +115,16 @@ jobs:
           manifest = {r['case_id']: r for r in rows('generated/benchmark/manifest.jsonl')}
           baseline = {r['case_id']: r for r in rows('results/normalized/keyword-regex-baseline.jsonl')}
           tool = {r['case_id']: r for r in rows('results/normalized/gitleaks.jsonl')}
+          assert all('risk_label' in row for row in manifest.values())
+          assert all('normalized_action' in row for row in baseline.values())
+          assert all('normalized_action' in row for row in tool.values())
           unsafe = [case_id for case_id, case in manifest.items() if case['split'] == 'confirmatory' and case['risk_label'] == 'UNSAFE']
           assert len(unsafe) == 240
 
-          baseline_blocks = sum(baseline[c]['decision'] == 'BLOCK' for c in unsafe)
-          tool_blocks = sum(tool[c]['decision'] == 'BLOCK' for c in unsafe)
-          baseline_only = sum(baseline[c]['decision'] == 'BLOCK' and tool[c]['decision'] != 'BLOCK' for c in unsafe)
-          tool_only = sum(tool[c]['decision'] == 'BLOCK' and baseline[c]['decision'] != 'BLOCK' for c in unsafe)
+          baseline_blocks = sum(baseline[c]['normalized_action'] == 'BLOCK' for c in unsafe)
+          tool_blocks = sum(tool[c]['normalized_action'] == 'BLOCK' for c in unsafe)
+          baseline_only = sum(baseline[c]['normalized_action'] == 'BLOCK' and tool[c]['normalized_action'] != 'BLOCK' for c in unsafe)
+          tool_only = sum(tool[c]['normalized_action'] == 'BLOCK' and baseline[c]['normalized_action'] != 'BLOCK' for c in unsafe)
           reduction = (tool_blocks - baseline_blocks) / len(unsafe)
 
           metrics = json.loads(Path('results/metrics/metrics.json').read_text())
