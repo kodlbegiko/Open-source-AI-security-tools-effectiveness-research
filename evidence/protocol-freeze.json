@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "status": "PROTOCOL_FROZEN",
+  "activation_rule": "The Git commit containing this file is the cryptographic protocol-freeze identity for the complete repository tree.",
+  "manifest_status_override": "This marker activates and supersedes the pre-activation PENDING_FREEZE_MARKER field in research-manifest.yml.",
+  "freeze_time_basis": "Git commit author and committer timestamps",
+  "formal_outcomes_inspected_before_freeze": false,
+  "frozen_paths": [
+    "research-manifest.yml",
+    "docs/protocol.md",
+    "docs/preregistration.md",
+    "docs/threat-model.md",
+    "docs/labeling-guide.md",
+    "docs/sample-size-analysis.md",
+    "data/sample-size-analysis.json",
+    "docs/protocol-deviations.md",
+    "benchmark/generate_benchmark.py",
+    "benchmark/schemas/case.schema.json",
+    "benchmark/schemas/result.schema.json",
+    "baselines/run_baselines.py",
+    "adapters/normalize_results.py",
+    "analysis/compute_metrics.py",
+    "analysis/measure_latency.py",
+    "scripts/run_evaluation.sh",
+    "scripts/redact_gitleaks.py",
+    "scripts/redact_trufflehog.py",
+    "requirements.lock",
+    ".github/workflows/evaluation.yml"
+  ],
+  "benchmark": {
+    "total": 780,
+    "confirmatory_total": 480,
+    "confirmatory_unsafe": 240,
+    "ood_total": 180,
+    "ood_unsafe": 90,
+    "manifest_sha256": "38059b47ea3b8217df38b90a4525286a18ca37b7bc136cfbbce5227aa6f54e27"
+  },
+  "primary_comparison": {
+    "tool": "Gitleaks 8.30.1",
+    "comparator": "keyword-regex-baseline",
+    "population": "confirmatory UNSAFE artifacts",
+    "endpoint": "paired absolute reduction in attack pass-through rate",
+    "bootstrap_iterations": 10000,
+    "bootstrap_seed": 20260731,
+    "test": "exact two-sided McNemar"
+  },
+  "secondary_comparisons": [
+    "TruffleHog 3.96.0 versus keyword-regex-baseline",
+    "detect-secrets 1.5.0 versus keyword-regex-baseline"
+  ],
+  "primary_error_policy": "FAIL_OPEN",
+  "independent_review": "NOT_AVAILABLE",
+  "post_freeze_change_rule": "Any outcome-relevant change requires an entry in docs/protocol-deviations.md and may invalidate formal execution."
+}
