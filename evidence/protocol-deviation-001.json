@@ -1,0 +1,12 @@
+{
+  "deviation_id": "PD-001",
+  "stage": "post-freeze pre-reporting",
+  "affected_primary_endpoint": false,
+  "formal_outcomes_inspected": false,
+  "issue": "The frozen protocol prespecified transformation, credential-family and fail-closed sensitivity tables, but the frozen primary metrics program did not emit those secondary tables.",
+  "resolution": "Add a separate reporting-layer program that derives only the prespecified secondary tables from the frozen manifest and normalized outputs. It cannot modify primary metrics, normalized decisions, labels, thresholds or scanner execution.",
+  "classification": "PRESPECIFIED_SECONDARY_ANALYSIS_IMPLEMENTED_POST_FREEZE",
+  "bias_direction": "Unknown; implementation occurred without inspecting formal outcomes.",
+  "primary_analysis_validity": "UNCHANGED",
+  "required_reporting": "All derived tables must be labeled secondary and post-freeze implementation; they cannot support or overturn the primary verdict."
+}
