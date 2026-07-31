@@ -1,0 +1,71 @@
+name: Tool landscape metadata
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  collect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.13'
+
+      - name: Collect official repository metadata
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python scripts/collect_tool_landscape.py
+
+      - name: Validate generated outputs
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import csv
+          import json
+          from pathlib import Path
+
+          root = Path('generated/tool-landscape')
+          document = json.loads((root / 'tool-candidates.json').read_text())
+          summary = json.loads((root / 'collection-summary.json').read_text())
+          with (root / 'tool-candidates.csv').open(newline='', encoding='utf-8') as handle:
+              rows = list(csv.DictReader(handle))
+
+          assert document['candidate_count'] >= 20
+          assert document['verified_count'] == document['candidate_count']
+          assert document['category_count'] >= 5
+          assert len(rows) == document['candidate_count']
+          assert summary['unresolved_count'] == 0
+          assert (root / 'tool-landscape.md').stat().st_size > 500
+          print(json.dumps(summary, indent=2, sort_keys=True))
+          PY
+
+      - name: Create checksums
+        if: always()
+        run: |
+          set -euo pipefail
+          root=generated/tool-landscape
+          if [[ -d "$root" ]]; then
+            find "$root" -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > "$root/SHA256SUMS"
+            cat "$root/SHA256SUMS"
+          fi
+
+      - name: Upload landscape evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: tool-landscape-metadata
+          path: generated/tool-landscape
+          if-no-files-found: error
+          retention-days: 30
