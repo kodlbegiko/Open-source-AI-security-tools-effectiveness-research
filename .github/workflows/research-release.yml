@@ -1,0 +1,126 @@
+name: Publish research release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: research-release-v0.1.0
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: research-v0.1.0
+      RELEASE_TITLE: Open-Source AI Security Tools Effectiveness Study v0.1.0
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Enforce release evidence gate
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF_NAME" = 'main'
+          required=(
+            README.md
+            evidence/checksums/SHA256SUMS
+            evidence/evidence-manifest.json
+            evidence/formal-run/artifact.json
+            reports/executive-summary.md
+            reports/final-report.md
+            reports/reproducibility-report.md
+            results/metrics/metrics.json
+            generated/benchmark/summary.json
+          )
+          for path in "${required[@]}"; do test -s "$path"; done
+          sha256sum -c evidence/checksums/SHA256SUMS
+          test ! -d generated/benchmark/cases
+          test ! -d results/raw
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          manifest = json.loads(Path('evidence/evidence-manifest.json').read_text())
+          artifact = json.loads(Path('evidence/formal-run/artifact.json').read_text())
+          metrics = json.loads(Path('results/metrics/metrics.json').read_text())
+          summary = json.loads(Path('generated/benchmark/summary.json').read_text())
+          assert manifest['formal_run_id'] == '30607636477'
+          assert manifest['artifact_id'] == '8784217517'
+          assert manifest['artifact_digest'] == 'sha256:296fb7ea1c01f82ac14b19c71ef4a85e3b015839e8cbf4ed542ac85f22f90b27'
+          assert manifest['benchmark_manifest_sha256'] == summary['manifest_sha256']
+          assert summary['manifest_sha256'] == '38059b47ea3b8217df38b90a4525286a18ca37b7bc136cfbbce5227aa6f54e27'
+          assert metrics['primary_comparison'] == 'gitleaks versus keyword-regex-baseline'
+          assert metrics['threshold_evaluation']['gitleaks']['all_deployment_thresholds_met'] is True
+          assert artifact['workflow_run']['id'] == 30607636477
+          assert artifact['digest'] == manifest['artifact_digest']
+          final = Path('reports/final-report.md').read_text()
+          assert 'PD-002' in final
+          assert 'Independent review: **NOT AVAILABLE**' in final
+          print(json.dumps({'release_gate': 'passed', 'formal_run': manifest['formal_run_id'], 'artifact': manifest['artifact_id']}, indent=2))
+          PY
+
+      - name: Build release assets
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/research-release
+          mkdir -p /tmp/research-release
+          zip -q -r /tmp/research-release/research-evidence-bundle.zip \
+            README.md research-manifest.yml requirements.lock \
+            reports docs data generated/benchmark results/normalized results/metrics evidence \
+            -x 'evidence/checksums/release-SHA256SUMS'
+          cp reports/executive-summary.md /tmp/research-release/executive-summary.md
+          cp reports/final-report.md /tmp/research-release/final-report.md
+          cp evidence/evidence-manifest.json /tmp/research-release/evidence-manifest.json
+          cp evidence/formal-run/artifact.json /tmp/research-release/formal-artifact.json
+          cp results/metrics/metrics.json /tmp/research-release/metrics.json
+          (
+            cd /tmp/research-release
+            sha256sum executive-summary.md final-report.md evidence-manifest.json formal-artifact.json metrics.json research-evidence-bundle.zip > release-SHA256SUMS
+            sha256sum -c release-SHA256SUMS
+          )
+
+      - name: Create annotated research tag
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            test "$(git rev-list -n 1 "$TAG")" = "$GITHUB_SHA"
+          else
+            git tag -a "$TAG" "$GITHUB_SHA" -m "$RELEASE_TITLE"
+            git push origin "$TAG"
+          fi
+
+      - name: Publish GitHub Release
+        run: |
+          set -euo pipefail
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            ref_object=$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${TAG}" --jq '.object.sha')
+            test "$ref_object" = "$(git rev-parse "$TAG^{tag}")"
+            test "$(gh release view "$TAG" --json isDraft --jq '.isDraft')" = 'false'
+            test "$(gh release view "$TAG" --json isPrerelease --jq '.isPrerelease')" = 'false'
+            echo 'Release already exists and its tag identity is valid.'
+          else
+            gh release create "$TAG" \
+              --verify-tag \
+              --title "$RELEASE_TITLE" \
+              --notes-file reports/executive-summary.md \
+              /tmp/research-release/executive-summary.md \
+              /tmp/research-release/final-report.md \
+              /tmp/research-release/evidence-manifest.json \
+              /tmp/research-release/formal-artifact.json \
+              /tmp/research-release/metrics.json \
+              /tmp/research-release/research-evidence-bundle.zip \
+              /tmp/research-release/release-SHA256SUMS
+          fi
+          gh release view "$TAG" --json url,tagName,name,isDraft,isPrerelease,publishedAt

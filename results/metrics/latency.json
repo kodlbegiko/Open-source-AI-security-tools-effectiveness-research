@@ -1,0 +1,486 @@
+{
+  "sample_definition": "30 pilot cases: 5 SAFE and 5 UNSAFE per language",
+  "schema_version": "1.0",
+  "tools": {
+    "detect-secrets": {
+      "max_ms": 164.11068899999748,
+      "mean_ms": 163.9483252666674,
+      "median_ms": 163.94389000000587,
+      "n": 30,
+      "nonzero_return_codes": 0,
+      "p95_ms": 164.0240235500002,
+      "records": [
+        {
+          "case_id": "pilo-en-000",
+          "latency_ms": 163.95977499999503,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-en-001",
+          "latency_ms": 163.95732700000565,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-en-002",
+          "latency_ms": 164.00590300000317,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-en-003",
+          "latency_ms": 163.91911499999878,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-en-004",
+          "latency_ms": 163.97282100000155,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-en-010",
+          "latency_ms": 163.94232800000452,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-en-011",
+          "latency_ms": 163.9269650000017,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-en-012",
+          "latency_ms": 163.94718799999453,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-en-013",
+          "latency_ms": 163.9004209999939,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-en-014",
+          "latency_ms": 163.89491400001077,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-zhtw-000",
+          "latency_ms": 163.89255499998967,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-zhtw-001",
+          "latency_ms": 163.99054900000465,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-zhtw-002",
+          "latency_ms": 163.87728899999843,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-zhtw-003",
+          "latency_ms": 163.91594000000964,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-zhtw-004",
+          "latency_ms": 164.0115379999969,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-zhtw-010",
+          "latency_ms": 163.9469849999955,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-zhtw-011",
+          "latency_ms": 163.9539840000026,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-zhtw-012",
+          "latency_ms": 164.0342390000029,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-zhtw-013",
+          "latency_ms": 164.11068899999748,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-zhtw-014",
+          "latency_ms": 163.9829979999945,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-mixed-000",
+          "latency_ms": 163.94760800000086,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-mixed-001",
+          "latency_ms": 163.9134720000044,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-mixed-002",
+          "latency_ms": 163.93857100000275,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-mixed-003",
+          "latency_ms": 163.9454520000072,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-mixed-004",
+          "latency_ms": 163.89920199999608,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-mixed-010",
+          "latency_ms": 163.9135430000067,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-mixed-011",
+          "latency_ms": 163.9807789999992,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-mixed-012",
+          "latency_ms": 163.94111099999975,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-mixed-013",
+          "latency_ms": 163.93181099999765,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-mixed-014",
+          "latency_ms": 163.89468600000612,
+          "return_code": 0
+        }
+      ]
+    },
+    "gitleaks": {
+      "max_ms": 314.42631000000176,
+      "mean_ms": 266.0087876000001,
+      "median_ms": 264.26555800000176,
+      "n": 30,
+      "nonzero_return_codes": 0,
+      "p95_ms": 264.87727224999776,
+      "records": [
+        {
+          "case_id": "pilo-en-000",
+          "latency_ms": 264.38851199999647,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-en-001",
+          "latency_ms": 264.0324760000041,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-en-002",
+          "latency_ms": 264.0959629999955,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-en-003",
+          "latency_ms": 264.0561369999972,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-en-004",
+          "latency_ms": 264.18129000000334,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-en-010",
+          "latency_ms": 264.53388800000255,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-en-011",
+          "latency_ms": 264.0884249999971,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-en-012",
+          "latency_ms": 264.8664069999995,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-en-013",
+          "latency_ms": 264.19163100000276,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-en-014",
+          "latency_ms": 264.2440150000027,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-zhtw-000",
+          "latency_ms": 264.2883389999966,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-zhtw-001",
+          "latency_ms": 264.1323460000038,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-zhtw-002",
+          "latency_ms": 264.7988940000019,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-zhtw-003",
+          "latency_ms": 264.53471399999984,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-zhtw-004",
+          "latency_ms": 264.28710100000075,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-zhtw-010",
+          "latency_ms": 264.29459599999916,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-zhtw-011",
+          "latency_ms": 264.6495640000097,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-zhtw-012",
+          "latency_ms": 264.69955400000345,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-zhtw-013",
+          "latency_ms": 264.3497699999955,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-zhtw-014",
+          "latency_ms": 264.35080299999925,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-mixed-000",
+          "latency_ms": 314.42631000000176,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-mixed-001",
+          "latency_ms": 264.0878540000102,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-mixed-002",
+          "latency_ms": 264.062330999991,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-mixed-003",
+          "latency_ms": 264.2366240000058,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-mixed-004",
+          "latency_ms": 264.8175519999967,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-mixed-010",
+          "latency_ms": 264.22039400000585,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-mixed-011",
+          "latency_ms": 264.12653299999533,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-mixed-012",
+          "latency_ms": 264.218606,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-mixed-013",
+          "latency_ms": 264.1168369999889,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-mixed-014",
+          "latency_ms": 264.88616199999626,
+          "return_code": 0
+        }
+      ]
+    },
+    "trufflehog": {
+      "max_ms": 1517.6661130000043,
+      "mean_ms": 1511.7182534999997,
+      "median_ms": 1516.6623490000006,
+      "n": 30,
+      "nonzero_return_codes": 0,
+      "p95_ms": 1517.1484450499947,
+      "records": [
+        {
+          "case_id": "pilo-en-000",
+          "latency_ms": 1516.4020389999991,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-en-001",
+          "latency_ms": 1516.5620530000012,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-en-002",
+          "latency_ms": 1516.792295000002,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-en-003",
+          "latency_ms": 1516.7358309999913,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-en-004",
+          "latency_ms": 1516.800883000002,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-en-010",
+          "latency_ms": 1516.64538,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-en-011",
+          "latency_ms": 1516.753586000007,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-en-012",
+          "latency_ms": 1517.0109279999906,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-en-013",
+          "latency_ms": 1516.6077049999985,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-en-014",
+          "latency_ms": 1516.6615649999926,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-zhtw-000",
+          "latency_ms": 1516.6652380000016,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-zhtw-001",
+          "latency_ms": 1516.8169469999953,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-zhtw-002",
+          "latency_ms": 1516.8570820000014,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-zhtw-003",
+          "latency_ms": 1516.9387800000038,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-zhtw-004",
+          "latency_ms": 1516.6423839999936,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-zhtw-010",
+          "latency_ms": 1516.6883879999914,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-zhtw-011",
+          "latency_ms": 1517.6661130000043,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-zhtw-012",
+          "latency_ms": 1516.9294500000065,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-zhtw-013",
+          "latency_ms": 1516.7581519999942,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-zhtw-014",
+          "latency_ms": 1516.6631330000087,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-mixed-000",
+          "latency_ms": 1516.5282239999983,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-mixed-001",
+          "latency_ms": 1466.785098999992,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-mixed-002",
+          "latency_ms": 1516.5681310000139,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-mixed-003",
+          "latency_ms": 1516.3674949999972,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-mixed-004",
+          "latency_ms": 1516.6508269999922,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-mixed-010",
+          "latency_ms": 1517.260958999998,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-mixed-011",
+          "latency_ms": 1466.3422060000073,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-mixed-012",
+          "latency_ms": 1516.4845740000032,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-mixed-013",
+          "latency_ms": 1516.5421220000042,
+          "return_code": 0
+        },
+        {
+          "case_id": "pilo-mixed-014",
+          "latency_ms": 1466.4200360000023,
+          "return_code": 0
+        }
+      ]
+    }
+  }
+}

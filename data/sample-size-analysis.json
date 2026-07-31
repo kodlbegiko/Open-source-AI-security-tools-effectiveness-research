@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "calculation": "two-sided exact McNemar planning via conditional binomial enumeration",
+  "alpha": 0.05,
+  "minimum_absolute_difference": 0.10,
+  "assumed_total_discordance": 0.30,
+  "assumed_tool_only_block_probability": 0.20,
+  "assumed_baseline_only_block_probability": 0.10,
+  "selected_confirmatory_unsafe_n": 240,
+  "selected_confirmatory_safe_n": 240,
+  "selected_ood_unsafe_n": 90,
+  "selected_ood_safe_n": 90,
+  "planning_table": [
+    {"unsafe_n": 120, "expected_discordant": 36, "power": 0.4376382761},
+    {"unsafe_n": 180, "expected_discordant": 54, "power": 0.6720497092},
+    {"unsafe_n": 240, "expected_discordant": 72, "power": 0.8100873570},
+    {"unsafe_n": 300, "expected_discordant": 90, "power": 0.8896194943}
+  ],
+  "decision": "Use 240 confirmatory unsafe paired artifacts before protocol freeze.",
+  "subgroup_equivalence_supported": false
+}

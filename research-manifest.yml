@@ -1,0 +1,85 @@
+schema_version: "1.0"
+status: PENDING_FREEZE_MARKER
+repository: kodlbegiko/Open-source-AI-security-tools-effectiveness-research
+research_branch: research/effectiveness-study
+category: secret_and_credential_leakage_detection
+use_case: post_generation_pre_persistence_llm_output_guardrail
+primary_question: >-
+  Does Gitleaks reduce credential-bearing artifact pass-through by at least
+  10 percentage points relative to a frozen transparent regex baseline while
+  maintaining acceptable benign blocking?
+primary_tool:
+  name: Gitleaks
+  version: "8.30.1"
+  release_tag: v8.30.1
+  linux_x64_sha256: 551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb
+secondary_tools:
+  - name: TruffleHog
+    version: "3.96.0"
+    release_tag: v3.96.0
+    linux_amd64_sha256: 7105f1cd6577f058a9e39d0578f1a99c8a1e481e4d3512cd8a09acfe22a0fdc0
+    provider_verification: disabled
+  - name: detect-secrets
+    version: "1.5.0"
+    python: "3.13.14"
+    requirements_lock: requirements.lock
+baselines:
+  - no-security-tool
+  - keyword-regex-baseline
+benchmark:
+  generator: benchmark/generate_benchmark.py
+  manifest_sha256: 38059b47ea3b8217df38b90a4525286a18ca37b7bc136cfbbce5227aa6f54e27
+  total: 780
+  splits:
+    development: 60
+    pilot: 60
+    confirmatory: 480
+    out-of-distribution: 180
+  labels:
+    SAFE: 390
+    UNSAFE: 390
+  languages:
+    en: 260
+    zh-TW: 260
+    mixed: 260
+  raw_inputs_committable: false
+adapter_contract:
+  actions: [ALLOW, BLOCK, REVIEW, ERROR, TIMEOUT, UNSUPPORTED]
+  primary_error_policy: fail_open
+  retries: 0
+primary_analysis:
+  tool: gitleaks
+  comparator: keyword-regex-baseline
+  population: confirmatory_UNSAFE
+  endpoint: absolute_paired_attack_pass_through_rate_reduction
+  bootstrap_iterations: 10000
+  bootstrap_seed: 20260731
+  test: exact_two_sided_mcnemar
+  alpha: 0.05
+secondary_analysis:
+  tools: [trufflehog, detect-secrets]
+  multiplicity: holm_across_two_mcnemar_tests
+deployment_thresholds:
+  minimum_attack_block_rate_improvement: 0.10
+  comparison_ci_lower_bound_minimum_exclusive: 0.0
+  benign_block_rate_point_maximum: 0.05
+  benign_block_rate_ci95_upper_maximum: 0.10
+  ood_attack_block_rate_degradation_maximum: 0.15
+  zh_tw_attack_block_rate_degradation_maximum: 0.15
+execution:
+  runner: ubuntu-24.04
+  python: "3.13.14"
+  batch_timeout_seconds: 180
+  per_case_timeout_seconds: 30
+  provider_verification: disabled
+  formal_runs_per_case: 1
+safety:
+  real_credentials: prohibited
+  third_party_testing: prohibited
+  live_provider_verification: prohibited
+  unredacted_scanner_output: ephemeral_runner_tmp_only
+  retained_scanner_output: strict_field_whitelist
+  raw_secret_shaped_artifacts: workflow_artifact_only
+review:
+  independent_human_reviewer: NOT_AVAILABLE
+  independent_annotator: NOT_AVAILABLE

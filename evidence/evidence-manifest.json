@@ -1,0 +1,327 @@
+{
+  "artifact_digest": "sha256:296fb7ea1c01f82ac14b19c71ef4a85e3b015839e8cbf4ed542ac85f22f90b27",
+  "artifact_id": "8784217517",
+  "artifact_zip_sha256": "296fb7ea1c01f82ac14b19c71ef4a85e3b015839e8cbf4ed542ac85f22f90b27",
+  "authoritative_execution_commit": "b41edd68cf7384ba7982daf3a506b83c9ea5393b",
+  "benchmark_manifest_sha256": "38059b47ea3b8217df38b90a4525286a18ca37b7bc136cfbbce5227aa6f54e27",
+  "deployment_thresholds_met": true,
+  "files": [
+    {
+      "bytes": 1263,
+      "path": "README.md",
+      "sha256": "77ea803ef4602e9a50ff2db37f08812abc471c72276972070916c232d76fa493"
+    },
+    {
+      "bytes": 729,
+      "path": "data/claim-verification.csv",
+      "sha256": "f6ceeb57300f941712bf8cdff7094113df6004d02dfd207c685375782cc20bf5"
+    },
+    {
+      "bytes": 3220,
+      "path": "data/environment-audit.json",
+      "sha256": "0a97e414583ad81314ad4fe6dbfebd87ac90e6583107f520b6a78edaddf79574"
+    },
+    {
+      "bytes": 2299,
+      "path": "data/gate1-probe-results.json",
+      "sha256": "af5aedf02a0ea884d7c2f3780a0506d7740dec78f979b121545f82d838efabd8"
+    },
+    {
+      "bytes": 1958,
+      "path": "data/repository-audit.json",
+      "sha256": "b6b29bb88bed96037ed9efa9ce2ce163f3143d745a201577cae29a35b823dc81"
+    },
+    {
+      "bytes": 898,
+      "path": "data/sample-size-analysis.json",
+      "sha256": "f8402ddc3d515b407266dcddc8d1f186af6150173129a401c1291e67e91dc69d"
+    },
+    {
+      "bytes": 5323,
+      "path": "data/tool-candidate-seeds.json",
+      "sha256": "876dc10ea7d75e476c1bbc4b3167f01a12ce1b267beffaf0b59d382b1842de0d"
+    },
+    {
+      "bytes": 7312,
+      "path": "data/tool-candidates.csv",
+      "sha256": "e227eecbce7d106d7ff4434a389ee6a032d9a12af52d60662ab2ab408c9b0c26"
+    },
+    {
+      "bytes": 14319,
+      "path": "data/tool-candidates.json",
+      "sha256": "e4ed21fd2eb9c41b2a269307834c0119d1fa4698ba0b584f6bd1fff37a577450"
+    },
+    {
+      "bytes": 444,
+      "path": "data/tool-selection-scores.csv",
+      "sha256": "93ba776b09bc1ebf4ae91fa8439c00fbde371c34e08c85ca0610311286c2560a"
+    },
+    {
+      "bytes": 2226,
+      "path": "data/tool-selection-scores.json",
+      "sha256": "9e5f172058e89fbf5895f5535460cd8b45233f66baedf116fb9c32a930366eb2"
+    },
+    {
+      "bytes": 1416,
+      "path": "docs/dependency-lock.md",
+      "sha256": "31b2835e12380a0c6bab0d7f63f1646c6ec46624b05403c74d734c6e69d06bbb"
+    },
+    {
+      "bytes": 5881,
+      "path": "docs/environment-audit.md",
+      "sha256": "1eeb6ceaf0c754ba64757ebf800d96c23eea35cf2ee45c600a51993eaf3ea857"
+    },
+    {
+      "bytes": 3552,
+      "path": "docs/gate1-probe-results.md",
+      "sha256": "33b90ae41a01e01955a4eb45bab5812e11c4735ed6bfbabe375542144a2326c9"
+    },
+    {
+      "bytes": 3256,
+      "path": "docs/labeling-guide.md",
+      "sha256": "9560b74dffd6dc919f3955cd0d6e953f54d40f7da5c9d0140a6cfda1629c2c9c"
+    },
+    {
+      "bytes": 284,
+      "path": "docs/limitations.md",
+      "sha256": "a09bf00ebd8258cffe22d442a02661c51eb060b149b9f4b8c62d70cba52967c5"
+    },
+    {
+      "bytes": 3705,
+      "path": "docs/preregistration.md",
+      "sha256": "36a81b5df25c889a8b9deee95e555143a91d68230fd8e9db9afac099e347734f"
+    },
+    {
+      "bytes": 4539,
+      "path": "docs/protocol-deviations.md",
+      "sha256": "080ece8d5c401f941e87d943a067532b9052c83cbaaf02fa974e97563ff53bbb"
+    },
+    {
+      "bytes": 7047,
+      "path": "docs/protocol.md",
+      "sha256": "28a96d545667f0a4572cda3f392e947a4a7f06370f43944c36408c9bc5cab1df"
+    },
+    {
+      "bytes": 2642,
+      "path": "docs/repository-audit.md",
+      "sha256": "74898445f3f407fc8029d903618247496062b70542f0f780e6eccf83fd4e3a70"
+    },
+    {
+      "bytes": 306,
+      "path": "docs/reproducibility.md",
+      "sha256": "f25deddbeee0d858282d091919df7a0aee4ba3dfe162ac822747b174da0fdb7f"
+    },
+    {
+      "bytes": 5934,
+      "path": "docs/research-question.md",
+      "sha256": "3851f718ad3151bea750f15515c4b79172b5c63d630fb18a3f5ccfc17b512f7e"
+    },
+    {
+      "bytes": 2232,
+      "path": "docs/sample-size-analysis.md",
+      "sha256": "0161906f6c85ce09ad873c75b9a2725c812221681c6c9f600e3433fbab816f00"
+    },
+    {
+      "bytes": 3535,
+      "path": "docs/threat-model.md",
+      "sha256": "74119fe3b64f226b60cdace53a187ca960b9d9edc4a8fb69b1f3828bb1612060"
+    },
+    {
+      "bytes": 4094,
+      "path": "docs/tool-landscape.md",
+      "sha256": "afb9690b6294cdfc7edc729c03e060f968de4f12a7b07cc3711ec0ad210f9bcd"
+    },
+    {
+      "bytes": 6843,
+      "path": "docs/tool-selection.md",
+      "sha256": "a21af66d01e9d519da54937707303e4bd1707550954b18186cbf3df884b7ea5f"
+    },
+    {
+      "bytes": 381,
+      "path": "docs/validity-threats.md",
+      "sha256": "cddab11b57bc91d002bc2cb7d7e85a9ccc4bade2bc9905167a83c50155863eb0"
+    },
+    {
+      "bytes": 88,
+      "path": "evidence/formal-run/archive-SHA256SUMS",
+      "sha256": "020dcd87c86e1e70df4841c3ae5976f4df58cec675b3bf2e82eea4b8db22b00b"
+    },
+    {
+      "bytes": 99414,
+      "path": "evidence/formal-run/artifact-SHA256SUMS",
+      "sha256": "eb82c46db1298fd3b2a82fc2cae0fdcabc8b94cfe6838c980c0035dc3a7d7894"
+    },
+    {
+      "bytes": 1215,
+      "path": "evidence/formal-run/artifact.json",
+      "sha256": "60638c6567ea9ae90e2bab509f2eca0281feaf436cc5da9ddb329d2be2580e47"
+    },
+    {
+      "bytes": 1963,
+      "path": "evidence/formal-run/command-log.txt",
+      "sha256": "ed470ef3618cf9f74d618679b7886d2a6567f3b3454834b3a59b1ea160b40f52"
+    },
+    {
+      "bytes": 124,
+      "path": "evidence/formal-run/python-freeze.txt",
+      "sha256": "8b5c3a1b68c6f7cf72e19c03c49372877751a6d65c0a8ce7e1057361ce404e42"
+    },
+    {
+      "bytes": 16742,
+      "path": "evidence/formal-run/run.json",
+      "sha256": "7c6ec771d0da98215bd8ea932c02be273083ca0b6d8aa8bbc144a854b38913a9"
+    },
+    {
+      "bytes": 4612,
+      "path": "evidence/formal-run/runner-environment.txt",
+      "sha256": "ec666e97301c4a2f873351880f4138e9f3330d32e1823a16c4ff2058cb0b4346"
+    },
+    {
+      "bytes": 968,
+      "path": "evidence/protocol-deviation-001.json",
+      "sha256": "1c480b61aab297f3247a564daf2efec6d8b3273b6bf28471381272a2258194fd"
+    },
+    {
+      "bytes": 2240,
+      "path": "evidence/protocol-deviation-002.json",
+      "sha256": "6358ce3095f0e041ed6e5b8ca68cf6e003cfa8ca60f0586557403725238fc6c2"
+    },
+    {
+      "bytes": 2118,
+      "path": "evidence/protocol-freeze.json",
+      "sha256": "750a2f9d7f6881d87e5a3d1dbcfbb990e668bfa75a9ad5180bc23ed68b17b388"
+    },
+    {
+      "bytes": 579458,
+      "path": "generated/benchmark/manifest.jsonl",
+      "sha256": "38059b47ea3b8217df38b90a4525286a18ca37b7bc136cfbbce5227aa6f54e27"
+    },
+    {
+      "bytes": 411,
+      "path": "generated/benchmark/summary.json",
+      "sha256": "c68e2c81e1f2aaa849bd2601ddb96b0b54247733310e0e11458463f8c1688844"
+    },
+    {
+      "bytes": 737,
+      "path": "reports/claim-verification.md",
+      "sha256": "666facfa2444c1718e13520173b7d9f6310d596d9d21fd2633dab252c7dedaed"
+    },
+    {
+      "bytes": 2453,
+      "path": "reports/executive-summary.md",
+      "sha256": "2e3a78b8ecd3c76afebb121f552cf8bc46c680454079c73ceb2707e7e945a677"
+    },
+    {
+      "bytes": 6109,
+      "path": "reports/final-report.md",
+      "sha256": "b4f5d9c8f325d7b6158f6cb40536fe02973d34839a8ff43e349c583bb35fc88b"
+    },
+    {
+      "bytes": 284,
+      "path": "reports/limitations.md",
+      "sha256": "a09bf00ebd8258cffe22d442a02661c51eb060b149b9f4b8c62d70cba52967c5"
+    },
+    {
+      "bytes": 338,
+      "path": "reports/pilot-report.md",
+      "sha256": "6cae53b60944640ba2b3e70a0f38bcff770112ec14f5b50bd0eb5b44a70f4cfb"
+    },
+    {
+      "bytes": 378,
+      "path": "reports/red-team-results.md",
+      "sha256": "efe1f502a6bb94241e8f945096f92a8f20d910a2b92772d84fef7a3a346dd11b"
+    },
+    {
+      "bytes": 306,
+      "path": "reports/reproducibility-report.md",
+      "sha256": "f25deddbeee0d858282d091919df7a0aee4ba3dfe162ac822747b174da0fdb7f"
+    },
+    {
+      "bytes": 378,
+      "path": "reports/robustness-results.md",
+      "sha256": "efe1f502a6bb94241e8f945096f92a8f20d910a2b92772d84fef7a3a346dd11b"
+    },
+    {
+      "bytes": 381,
+      "path": "reports/validity-threats.md",
+      "sha256": "cddab11b57bc91d002bc2cb7d7e85a9ccc4bade2bc9905167a83c50155863eb0"
+    },
+    {
+      "bytes": 2764,
+      "path": "research-manifest.yml",
+      "sha256": "0b593bdb8472c24da6c8890234f169ae7b5fd981036f4f8b1c1c553e43d86452"
+    },
+    {
+      "bytes": 81,
+      "path": "results/metrics/detect-secrets-batch-resource.json",
+      "sha256": "94d07e5ca967a75e08e0e1695ca0eb5664e0fb011ffffe324eccdbcb8026895e"
+    },
+    {
+      "bytes": 81,
+      "path": "results/metrics/gitleaks-batch-resource.json",
+      "sha256": "4cbbdaed3d2ebc734a6542e842aa62c02a67a49c5a570999c1c460a540ec8ef2"
+    },
+    {
+      "bytes": 12489,
+      "path": "results/metrics/latency.json",
+      "sha256": "afa3c5c3d0f5c9925fe5b14072c5823699bb295c654c540941748ccd224a40e2"
+    },
+    {
+      "bytes": 80186,
+      "path": "results/metrics/metrics.json",
+      "sha256": "f3f6fa5451e3c6d6afa68b251edbde58dd426541ed0187e59f8f022ec99e924a"
+    },
+    {
+      "bytes": 509143,
+      "path": "results/metrics/secondary-subgroups.json",
+      "sha256": "7ffc0690697eada0994a24de869c2540713b109363af37dc4b356653ef02d4b6"
+    },
+    {
+      "bytes": 81,
+      "path": "results/metrics/trufflehog-batch-resource.json",
+      "sha256": "9a21b329385a2d50c6a99dc842efcd03640f0d9d49894ab9bb914cba3d151208"
+    },
+    {
+      "bytes": 117520,
+      "path": "results/normalized/detect-secrets.jsonl",
+      "sha256": "9ec733dbe90d35f8d490767a3a3c78e00fe23c009ac4150c3e5b4d44ea05e5ce"
+    },
+    {
+      "bytes": 112840,
+      "path": "results/normalized/gitleaks.jsonl",
+      "sha256": "fd4d85fbed160fa29b5f42464d11b900e38cdbe2e6ae16c177b98accd61bdc98"
+    },
+    {
+      "bytes": 143440,
+      "path": "results/normalized/keyword-regex-baseline.jsonl",
+      "sha256": "f47cba71e2c8104129b2d5463507966bc2d3f647f084db4d346fb46b9d58711d"
+    },
+    {
+      "bytes": 119080,
+      "path": "results/normalized/no-security-tool.jsonl",
+      "sha256": "d26b359f482452831113a5361461cb0226bcb52c642b47ce32c4bfab2e4b1f99"
+    },
+    {
+      "bytes": 114400,
+      "path": "results/normalized/trufflehog.jsonl",
+      "sha256": "65bc58bb9ad71cc3f1cccc664ff1fc9001ebf49825ad1174181187387e67ea33"
+    }
+  ],
+  "formal_run_id": "30607636477",
+  "formal_run_url": "https://github.com/kodlbegiko/Open-source-AI-security-tools-effectiveness-research/actions/runs/30607636477",
+  "independent_review": "NOT_AVAILABLE",
+  "primary_ci95": [
+    0.125,
+    0.23333333333333334
+  ],
+  "primary_mcnemar_p": 6.981082378842984e-11,
+  "primary_pass_through_reduction": 0.17916666666666667,
+  "productization_decision": "CONDITIONAL GO AS A SECONDARY CONTROL; INSUFFICIENT EVIDENCE AS A PRIMARY SECURITY BOUNDARY",
+  "protocol_deviations": [
+    "PD-001",
+    "PD-002"
+  ],
+  "protocol_freeze_commit": "4535b0a244e4538b148de18618d7a82d3bb37fde",
+  "reproducibility": "PARTIALLY_REPRODUCIBLE",
+  "schema_version": "2.0"
+}

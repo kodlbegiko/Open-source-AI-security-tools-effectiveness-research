@@ -1,0 +1,63 @@
+{
+  "schema_version": "1.0",
+  "audit_time": "2026-07-31T11:53:00+08:00",
+  "repository": {
+    "id": 1317888992,
+    "full_name": "kodlbegiko/Open-source-AI-security-tools-effectiveness-research",
+    "visibility": "public",
+    "archived": false,
+    "default_branch_setting": "main",
+    "clone_url": "https://github.com/kodlbegiko/Open-source-AI-security-tools-effectiveness-research.git"
+  },
+  "permissions": {
+    "admin": true,
+    "maintain": true,
+    "push": true,
+    "pull": true,
+    "triage": true
+  },
+  "initial_state": {
+    "repository_size": 0,
+    "branch_refs": 0,
+    "commits": 0,
+    "pull_requests": 0,
+    "issues": 0,
+    "contents": 0,
+    "github_commit_api_result": "Git Repository is empty"
+  },
+  "bootstrap": {
+    "main_commits": [
+      {
+        "sha": "73b2e6bef8fa44216f11f064060277b36b909edf",
+        "path": "README.md"
+      },
+      {
+        "sha": "c08fbd261a5df2dc89ba5515f16db4e83c415af3",
+        "path": ".gitignore"
+      },
+      {
+        "sha": "d3116646cbb5b36a22ee72c3af76d6e24925167d",
+        "path": "LICENSE"
+      }
+    ],
+    "research_branch": "research/effectiveness-study",
+    "research_branch_base_sha": "d3116646cbb5b36a22ee72c3af76d6e24925167d",
+    "atomic_root_commit_achieved": false,
+    "deviation_reason": "The available GitHub connector writes one file per contents-API commit. The final bootstrap tree contains only the required three files."
+  },
+  "capabilities": {
+    "metadata_read": "VERIFIED",
+    "file_write": "VERIFIED",
+    "branch_create": "VERIFIED",
+    "pull_request_create": "AVAILABLE_NOT_EXERCISED",
+    "github_actions": "NOT_YET_VERIFIED",
+    "tag_create": "NOT_VERIFIED",
+    "release_create": "NOT_VERIFIED"
+  },
+  "verdict": "GO WITH LIMITATIONS",
+  "limitations": [
+    "GitHub Actions has not run yet.",
+    "The current connector does not expose tag or release creation.",
+    "The execution environment does not have an authenticated GitHub CLI."
+  ]
+}

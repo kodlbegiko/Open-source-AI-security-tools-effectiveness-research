@@ -1,0 +1,226 @@
+name: Gate 0 and Gate 1 execution probe
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.13'
+
+      - name: Record runner environment
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/probe
+          {
+            echo "utc_time=$(date -u +%FT%TZ)"
+            uname -a
+            cat /etc/os-release
+            python --version
+            git --version
+            docker --version
+            jq --version
+          } | tee evidence/probe/runner-environment.txt
+
+      - name: Acquire pinned Gitleaks release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          api='https://api.github.com/repos/gitleaks/gitleaks/releases/tags/v8.30.1'
+          curl -fsSL \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H 'Accept: application/vnd.github+json' \
+            "$api" -o /tmp/gitleaks-release.json
+          asset='gitleaks_8.30.1_linux_x64.tar.gz'
+          url=$(jq -r --arg name "$asset" '.assets[] | select(.name == $name) | .browser_download_url' /tmp/gitleaks-release.json)
+          digest=$(jq -r --arg name "$asset" '.assets[] | select(.name == $name) | (.digest // "")' /tmp/gitleaks-release.json)
+          test -n "$url" && test "$url" != null
+          curl -fsSL "$url" -o "/tmp/$asset"
+          echo '551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb  /tmp/gitleaks_8.30.1_linux_x64.tar.gz' | sha256sum -c -
+          mkdir -p tools/gitleaks
+          tar -xzf "/tmp/$asset" -C tools/gitleaks
+          chmod +x tools/gitleaks/gitleaks
+          tools/gitleaks/gitleaks version | tee evidence/probe/gitleaks-version.txt
+          printf 'api_digest=%s\n' "$digest" >> evidence/probe/gitleaks-version.txt
+
+      - name: Acquire pinned TruffleHog release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          api='https://api.github.com/repos/trufflesecurity/trufflehog/releases/tags/v3.96.0'
+          curl -fsSL \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H 'Accept: application/vnd.github+json' \
+            "$api" -o /tmp/trufflehog-release.json
+          asset='trufflehog_3.96.0_linux_amd64.tar.gz'
+          url=$(jq -r --arg name "$asset" '.assets[] | select(.name == $name) | .browser_download_url' /tmp/trufflehog-release.json)
+          digest=$(jq -r --arg name "$asset" '.assets[] | select(.name == $name) | (.digest // "")' /tmp/trufflehog-release.json)
+          test -n "$url" && test "$url" != null
+          curl -fsSL "$url" -o "/tmp/$asset"
+          if [[ "$digest" == sha256:* ]]; then
+            expected=${digest#sha256:}
+            echo "$expected  /tmp/$asset" | sha256sum -c -
+          else
+            echo 'GitHub API did not expose an asset digest; acquisition remains provisional.' | tee evidence/probe/trufflehog-digest-warning.txt
+          fi
+          mkdir -p tools/trufflehog
+          tar -xzf "/tmp/$asset" -C tools/trufflehog
+          chmod +x tools/trufflehog/trufflehog
+          tools/trufflehog/trufflehog --version | tee evidence/probe/trufflehog-version.txt
+          printf 'api_digest=%s\n' "$digest" >> evidence/probe/trufflehog-version.txt
+
+      - name: Install pinned detect-secrets release
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check 'detect-secrets==1.5.0'
+          detect-secrets --version | tee evidence/probe/detect-secrets-version.txt
+          python -m pip freeze | grep -E '^(detect-secrets|PyYAML|requests)=' | tee evidence/probe/python-packages.txt
+
+      - name: Create non-live synthetic fixture
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/probe/fixture
+          python - <<'PY'
+          import base64
+          import hashlib
+          from pathlib import Path
+
+          def hex_digest(label: str) -> str:
+              return hashlib.sha256(label.encode('utf-8')).hexdigest()
+
+          # Values are derived only inside the ephemeral runner and are never
+          # verified against a provider. No credential-shaped literal is stored
+          # in repository history.
+          aws_key = 'AK' + 'IA' + hex_digest('research-fixture-aws-key').upper()[:16]
+          aws_secret = base64.b64encode(
+              hashlib.sha256(b'research-fixture-aws-secret').digest()
+          ).decode('ascii')[:40]
+          github_token = 'gh' + 'p_' + hex_digest('research-fixture-github')[:36]
+          slack_token = (
+              'xo' + 'xb-' +
+              str(int(hex_digest('slack-a')[:12], 16))[:12] + '-' +
+              str(int(hex_digest('slack-b')[:12], 16))[:12] + '-' +
+              hex_digest('slack-c')[:24]
+          )
+          generic_secret = hex_digest('research-fixture-generic')
+
+          text = '\n'.join([
+              'Synthetic credentials for defensive scanner testing only.',
+              f'aws_access_key_id = {aws_key}',
+              f'aws_secret_access_key = {aws_secret}',
+              f'github_token = {github_token}',
+              f'slack_bot_token = {slack_token}',
+              f'generic_high_entropy_secret = {generic_secret}',
+              'benign_reference = API_KEY_DOCUMENTATION_PLACEHOLDER',
+              '',
+          ])
+          Path('evidence/probe/fixture/sample.txt').write_text(text, encoding='utf-8')
+          PY
+
+      - name: Run tool smoke tests
+        run: |
+          set -u
+          mkdir -p evidence/probe/status
+
+          set +e
+          tools/gitleaks/gitleaks dir evidence/probe/fixture \
+            --no-banner \
+            --exit-code 0 \
+            --report-format json \
+            --report-path evidence/probe/gitleaks-results.json \
+            > evidence/probe/gitleaks-stdout.txt \
+            2> evidence/probe/gitleaks-stderr.txt
+          gitleaks_status=$?
+          echo "$gitleaks_status" > evidence/probe/status/gitleaks-exit-code.txt
+
+          tools/trufflehog/trufflehog filesystem evidence/probe/fixture \
+            --no-verification \
+            --json \
+            > evidence/probe/trufflehog-results.jsonl \
+            2> evidence/probe/trufflehog-stderr.txt
+          trufflehog_status=$?
+          echo "$trufflehog_status" > evidence/probe/status/trufflehog-exit-code.txt
+
+          detect-secrets scan \
+            --all-files \
+            evidence/probe/fixture/sample.txt \
+            > evidence/probe/detect-secrets-results.json \
+            2> evidence/probe/detect-secrets-stderr.txt
+          detect_secrets_status=$?
+          echo "$detect_secrets_status" > evidence/probe/status/detect-secrets-exit-code.txt
+          set -e
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          root = Path('evidence/probe')
+          gitleaks = json.loads((root / 'gitleaks-results.json').read_text() or '[]')
+          detect_secrets = json.loads((root / 'detect-secrets-results.json').read_text())
+
+          trufflehog = []
+          for line in (root / 'trufflehog-results.jsonl').read_text().splitlines():
+              if line.strip():
+                  trufflehog.append(json.loads(line))
+
+          detect_secret_count = sum(
+              len(items) for items in detect_secrets.get('results', {}).values()
+          )
+          summary = {
+              'gitleaks_findings': len(gitleaks),
+              'trufflehog_findings': len(trufflehog),
+              'detect_secrets_findings': detect_secret_count,
+              'exit_codes': {
+                  name: int((root / 'status' / f'{name}-exit-code.txt').read_text().strip())
+                  for name in ('gitleaks', 'trufflehog', 'detect-secrets')
+              },
+          }
+          (root / 'smoke-summary.json').write_text(
+              json.dumps(summary, indent=2, sort_keys=True) + '\n', encoding='utf-8'
+          )
+          print(json.dumps(summary, indent=2, sort_keys=True))
+
+          if summary['exit_codes'] != {
+              'gitleaks': 0,
+              'trufflehog': 0,
+              'detect-secrets': 0,
+          }:
+              raise SystemExit('one or more scanner commands failed')
+          if min(
+              summary['gitleaks_findings'],
+              summary['trufflehog_findings'],
+              summary['detect_secrets_findings'],
+          ) < 1:
+              raise SystemExit('one or more scanners produced no finding on the synthetic fixture')
+          PY
+
+      - name: Create evidence checksums
+        if: always()
+        run: |
+          set -euo pipefail
+          find evidence/probe -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > evidence/probe/SHA256SUMS
+          cat evidence/probe/SHA256SUMS
+
+      - name: Upload probe evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: gate0-gate1-probe-evidence
+          path: evidence/probe
+          if-no-files-found: error
+          retention-days: 30

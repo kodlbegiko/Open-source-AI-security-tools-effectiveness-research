@@ -1,0 +1,4 @@
+tool,claim,testable_interpretation,result_attack_block_rate,result_benign_block_rate,verdict,caveat
+Gitleaks 8.30.1,Detect secrets in files or repositories,Artifact-level BLOCK on policy-defined unsafe fixtures,0.9291666666666667,0.0,SUPPORTED WITHIN THIS SYNTHETIC BENCHMARK,Synthetic benchmark; live validity not tested
+TruffleHog 3.96.0,Detect secrets in files or repositories,Artifact-level BLOCK on policy-defined unsafe fixtures,0.6583333333333333,0.0,PARTIALLY SUPPORTED,Synthetic benchmark; live validity not tested
+detect-secrets 1.5.0,Detect secrets in files or repositories,Artifact-level BLOCK on policy-defined unsafe fixtures,0.4083333333333333,0.1,PARTIALLY SUPPORTED,Synthetic benchmark; live validity not tested

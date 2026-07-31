@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/schemas/ai-security-result.schema.json",
+  "title": "Normalized tool result",
+  "type": "object",
+  "required": ["case_id", "split", "tool", "normalized_action", "finding_count", "tool_error"],
+  "properties": {
+    "case_id": {"type": "string"},
+    "split": {"enum": ["development", "pilot", "confirmatory", "out-of-distribution"]},
+    "tool": {"type": "string"},
+    "normalized_action": {"enum": ["ALLOW", "BLOCK", "REVIEW", "ERROR", "TIMEOUT", "UNSUPPORTED"]},
+    "finding_count": {"type": "integer", "minimum": 0},
+    "tool_error": {"type": ["string", "null"]},
+    "matched_rules": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

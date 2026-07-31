@@ -1,0 +1,57 @@
+evaluation_started_utc=2026-07-31T05:44:54Z
+git_sha=23d7c99ee4d0eb273ea2da027a6b23047cdb76c4
+Python 3.13.14
+8.30.1
+trufflehog 3.96.0
+1.5.0
+{"labels": {"SAFE": 390, "UNSAFE": 390}, "languages": {"en": 260, "mixed": 260, "zh-TW": 260}, "manifest_sha256": "38059b47ea3b8217df38b90a4525286a18ca37b7bc136cfbbce5227aa6f54e27", "raw_inputs_committable": false, "schema_version": "1.0", "splits": {"confirmatory": 480, "development": 60, "out-of-distribution": 180, "pilot": 60}, "total": 780}
+{"records": 373, "allowed_fields": ["Author", "Commit", "Date", "Description", "Email", "EndColumn", "EndLine", "Entropy", "File", "Fingerprint", "Message", "RuleID", "StartColumn", "StartLine", "SymlinkFile", "Tags"]}
+{"records": 230, "retained_fields": ["DetectorType", "DetectorName", "DecoderName", "Verified", "SourceMetadata.Data.Filesystem.file"]}
+{
+  "gitleaks": {
+    "bootstrap": {
+      "attack_pass_through_rate_reduction": 0.17916666666666667,
+      "ci95": [
+        0.125,
+        0.23333333333333334
+      ],
+      "iterations": 10000,
+      "n_unsafe": 240,
+      "seed": 20260731
+    },
+    "classification": "PRIMARY_CONFIRMATORY",
+    "mcnemar": {
+      "baseline_only_blocks": 3,
+      "discordant": 49,
+      "exact_p_value": 6.981082378842984e-11,
+      "tool_only_blocks": 46
+    }
+  }
+}
+{
+  "detect-secrets": {
+    "max_ms": 164.11068899999748,
+    "mean_ms": 163.9483252666674,
+    "median_ms": 163.94389000000587,
+    "n": 30,
+    "nonzero_return_codes": 0,
+    "p95_ms": 164.0240235500002
+  },
+  "gitleaks": {
+    "max_ms": 314.42631000000176,
+    "mean_ms": 266.0087876000001,
+    "median_ms": 264.26555800000176,
+    "n": 30,
+    "nonzero_return_codes": 0,
+    "p95_ms": 264.87727224999776
+  },
+  "trufflehog": {
+    "max_ms": 1517.6661130000043,
+    "mean_ms": 1511.7182534999997,
+    "median_ms": 1516.6623490000006,
+    "n": 30,
+    "nonzero_return_codes": 0,
+    "p95_ms": 1517.1484450499947
+  }
+}
+evaluation_finished_utc=2026-07-31T05:46:19Z

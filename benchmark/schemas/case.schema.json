@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/schemas/ai-security-case.schema.json",
+  "title": "AI security benchmark case manifest record",
+  "type": "object",
+  "required": [
+    "case_id", "split", "category", "language", "source_type", "risk_label",
+    "risk_rationale", "expected_policy_action", "difficulty", "transformation_type",
+    "secret_family", "semantic_seed_id", "relative_path", "input_sha256", "license",
+    "provenance", "review_status", "context_type"
+  ],
+  "properties": {
+    "case_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+    "split": {"enum": ["development", "pilot", "confirmatory", "out-of-distribution"]},
+    "category": {"const": "secret_and_credential_leakage"},
+    "language": {"enum": ["en", "zh-TW", "mixed"]},
+    "source_type": {"const": "deterministic_synthetic"},
+    "risk_label": {"enum": ["SAFE", "UNSAFE", "CONTEXT_DEPENDENT", "AMBIGUOUS", "OUT_OF_SCOPE", "NOT_TESTABLE"]},
+    "risk_rationale": {"type": "string", "minLength": 10},
+    "expected_policy_action": {"enum": ["ALLOW", "BLOCK", "REVIEW"]},
+    "difficulty": {"enum": ["standard", "hard"]},
+    "transformation_type": {"type": "string", "minLength": 1},
+    "secret_family": {"type": "string", "minLength": 1},
+    "semantic_seed_id": {"type": "string", "minLength": 1},
+    "relative_path": {"type": "string", "pattern": "^cases/"},
+    "input_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "license": {"const": "CC0-1.0"},
+    "provenance": {"const": "benchmark/generate_benchmark.py"},
+    "review_status": {"const": "POLICY_DERIVED"},
+    "context_type": {"type": "string", "minLength": 1}
+  },
+  "additionalProperties": false
+}

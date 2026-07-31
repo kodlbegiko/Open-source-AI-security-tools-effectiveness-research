@@ -1,0 +1,302 @@
+name: Harvest authoritative formal evidence
+
+on:
+  push:
+    branches: [research/effectiveness-study]
+    paths:
+      - '.github/workflows/harvest-authoritative.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: harvest-formal-evaluation-results
+  cancel-in-progress: true
+
+jobs:
+  harvest:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PROTOCOL_FREEZE_SHA: 4535b0a244e4538b148de18618d7a82d3bb37fde
+      REPAIR_SHA: b41edd68cf7384ba7982daf3a506b83c9ea5393b
+      EXECUTION_SHA: b41edd68cf7384ba7982daf3a506b83c9ea5393b
+      FORMAL_RUN_ID: '30607636477'
+      ARTIFACT_ID: '8784217517'
+      ARTIFACT_DIGEST: sha256:296fb7ea1c01f82ac14b19c71ef4a85e3b015839e8cbf4ed542ac85f22f90b27
+    steps:
+      - name: Checkout research branch
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: research/effectiveness-study
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Verify registered evidence identity
+        run: |
+          set -euo pipefail
+          test "$(git log --all --grep='^research: freeze effectiveness evaluation protocol$' -1 --format='%H')" = "$PROTOCOL_FREEZE_SHA"
+          test "$(git log --all --grep='^fix: freeze evaluation log before checksumming evidence$' -1 --format='%H')" = "$REPAIR_SHA"
+          git merge-base --is-ancestor "$PROTOCOL_FREEZE_SHA" "$EXECUTION_SHA"
+          git merge-base --is-ancestor "$REPAIR_SHA" "$EXECUTION_SHA"
+          git merge-base --is-ancestor "$EXECUTION_SHA" HEAD
+
+          gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${FORMAL_RUN_ID}" > /tmp/formal-run.json
+          python - <<'PY'
+          import json, os
+          run = json.load(open('/tmp/formal-run.json'))
+          assert str(run['id']) == os.environ['FORMAL_RUN_ID']
+          assert run['status'] == 'completed'
+          assert run['conclusion'] == 'success'
+          assert run['head_sha'] == os.environ['EXECUTION_SHA']
+          assert run['head_branch'] == 'research/effectiveness-study'
+          assert run['event'] == 'pull_request'
+          print(json.dumps({'run_id': run['id'], 'head_sha': run['head_sha'], 'conclusion': run['conclusion'], 'url': run['html_url']}, indent=2))
+          PY
+
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${ARTIFACT_ID}" > /tmp/formal-artifact.json
+          python - <<'PY'
+          import json, os
+          artifact = json.load(open('/tmp/formal-artifact.json'))
+          assert str(artifact['id']) == os.environ['ARTIFACT_ID']
+          assert artifact['digest'] == os.environ['ARTIFACT_DIGEST']
+          assert not artifact['expired']
+          assert artifact['workflow_run']['id'] == int(os.environ['FORMAL_RUN_ID'])
+          assert artifact['workflow_run']['head_sha'] == os.environ['EXECUTION_SHA']
+          assert artifact['name'].startswith('formal-evaluation-')
+          print(json.dumps({'artifact_id': artifact['id'], 'name': artifact['name'], 'digest': artifact['digest'], 'bytes': artifact['size_in_bytes']}, indent=2))
+          PY
+
+      - name: Download and independently verify artifact archive
+        run: |
+          set -euo pipefail
+          curl -fsSL \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2022-11-28' \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${ARTIFACT_ID}/zip" \
+            -o /tmp/formal-evaluation.zip
+          zip_sha=$(sha256sum /tmp/formal-evaluation.zip | awk '{print $1}')
+          test "sha256:${zip_sha}" = "$ARTIFACT_DIGEST"
+          echo "$zip_sha" > /tmp/artifact-zip-sha256
+          unzip -t /tmp/formal-evaluation.zip
+          rm -rf /tmp/formal-download
+          mkdir -p /tmp/formal-download
+          unzip -q /tmp/formal-evaluation.zip -d /tmp/formal-download
+          metrics_path=$(find /tmp/formal-download -path '*/results/metrics/metrics.json' -print -quit)
+          test -n "$metrics_path"
+          artifact_root=$(dirname "$(dirname "$(dirname "$metrics_path")")")
+          echo "$artifact_root" > /tmp/artifact-root
+          cd "$artifact_root"
+          sha256sum -c evidence/evaluation/SHA256SUMS
+
+      - name: Validate artifact structure and safety
+        run: |
+          set -euo pipefail
+          artifact_root=$(cat /tmp/artifact-root)
+          ARTIFACT_ROOT="$artifact_root" python - <<'PY'
+          import json, os
+          from pathlib import Path
+          root = Path(os.environ['ARTIFACT_ROOT'])
+          summary = json.loads((root / 'generated/benchmark/summary.json').read_text())
+          assert summary['manifest_sha256'] == '38059b47ea3b8217df38b90a4525286a18ca37b7bc136cfbbce5227aa6f54e27'
+          assert summary['total'] == 780
+          assert summary['splits'] == {'development': 60, 'pilot': 60, 'confirmatory': 480, 'out-of-distribution': 180}
+          assert summary['languages'] == {'en': 260, 'mixed': 260, 'zh-TW': 260}
+          assert summary['labels'] == {'SAFE': 390, 'UNSAFE': 390}
+          for tool in ('no-security-tool', 'keyword-regex-baseline', 'gitleaks', 'trufflehog', 'detect-secrets'):
+              rows = [json.loads(line) for line in (root / 'results/normalized' / f'{tool}.jsonl').read_text().splitlines() if line.strip()]
+              assert len(rows) == 780, (tool, len(rows))
+              assert {row['tool'] for row in rows} == {tool}
+          metrics = json.loads((root / 'results/metrics/metrics.json').read_text())
+          assert metrics['primary_comparison'] == 'gitleaks versus keyword-regex-baseline'
+          assert set(metrics['primary_analysis']) == {'gitleaks'}
+          assert set(metrics['secondary_analysis']) == {'trufflehog', 'detect-secrets'}
+          gitleaks = json.loads((root / 'results/raw/gitleaks.json').read_text())
+          assert all('Secret' not in record and 'Match' not in record for record in gitleaks)
+          trufflehog = [json.loads(line) for line in (root / 'results/raw/trufflehog.jsonl').read_text().splitlines() if line.strip()]
+          for record in trufflehog:
+              assert not ({'Raw', 'RawV2', 'ExtraData', 'VerificationError'} & set(record))
+          print(json.dumps({'manifest': 'verified', 'normalized_rows_per_condition': 780, 'retained_outputs': 'whitelist_only'}, indent=2))
+          PY
+
+      - name: Copy public-safe evidence only
+        run: |
+          set -euo pipefail
+          artifact_root=$(cat /tmp/artifact-root)
+          rm -rf results/normalized results/metrics generated/benchmark evidence/formal-run reports
+          mkdir -p results/normalized results/metrics generated/benchmark evidence/formal-run reports
+          cp "$artifact_root"/results/normalized/*.jsonl results/normalized/
+          cp "$artifact_root"/results/metrics/* results/metrics/
+          cp "$artifact_root"/generated/benchmark/manifest.jsonl generated/benchmark/
+          cp "$artifact_root"/generated/benchmark/summary.json generated/benchmark/
+          cp "$artifact_root"/evidence/evaluation/runner-environment.txt evidence/formal-run/
+          cp "$artifact_root"/evidence/evaluation/python-freeze.txt evidence/formal-run/
+          cp "$artifact_root"/evidence/evaluation/command-log.txt evidence/formal-run/
+          cp "$artifact_root"/evidence/evaluation/SHA256SUMS evidence/formal-run/artifact-SHA256SUMS
+          cp /tmp/formal-run.json evidence/formal-run/run.json
+          cp /tmp/formal-artifact.json evidence/formal-run/artifact.json
+          zip_sha=$(cat /tmp/artifact-zip-sha256)
+          printf '%s  formal-evaluation.zip\n' "$zip_sha" > evidence/formal-run/archive-SHA256SUMS
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          artifact = json.loads(Path('evidence/formal-run/artifact.json').read_text())
+          artifact['downloaded_zip_sha256'] = Path('/tmp/artifact-zip-sha256').read_text().strip()
+          artifact['protocol_freeze_sha'] = os.environ['PROTOCOL_FREEZE_SHA']
+          artifact['authoritative_execution_sha'] = os.environ['EXECUTION_SHA']
+          artifact['selection_rule'] = 'FIRST_SUCCESSFUL_POST_PD002_REPAIR_RUN'
+          Path('evidence/formal-run/artifact.json').write_text(json.dumps(artifact, indent=2, sort_keys=True) + '\n')
+          PY
+
+      - name: Derive prespecified secondary tables
+        run: |
+          set -euo pipefail
+          python reporting/secondary_subgroup_analysis.py \
+            --manifest generated/benchmark/manifest.jsonl \
+            --results-dir results/normalized \
+            --output results/metrics/secondary-subgroups.json
+
+      - name: Build reports from authoritative evidence
+        run: |
+          set -euo pipefail
+          artifact_root=$(cat /tmp/artifact-root)
+          run_url=$(python -c "import json; print(json.load(open('/tmp/formal-run.json'))['html_url'])")
+          python reporting/build_reports.py \
+            --artifact-root "$artifact_root" \
+            --output-root "$GITHUB_WORKSPACE" \
+            --freeze-sha "$PROTOCOL_FREEZE_SHA" \
+            --run-id "$FORMAL_RUN_ID" \
+            --run-url "$run_url"
+
+      - name: Finalize report set and evidence manifest
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          import shutil
+          from pathlib import Path
+
+          root = Path('.')
+          summary = json.loads(Path('generated/benchmark/summary.json').read_text())
+          metrics = json.loads(Path('results/metrics/metrics.json').read_text())
+          artifact = json.loads(Path('evidence/formal-run/artifact.json').read_text())
+          primary = metrics['primary_analysis']['gitleaks']
+          boot = primary['bootstrap']
+          mc = primary['mcnemar']
+          threshold = metrics['threshold_evaluation']['gitleaks']
+          supported = all(threshold['checks'].values())
+          deployment = ('CONDITIONAL GO AS A SECONDARY CONTROL; INSUFFICIENT EVIDENCE AS A PRIMARY SECURITY BOUNDARY' if supported else 'NO-GO AS A PRIMARY SECURITY BOUNDARY')
+          pct = lambda value: f'{100 * value:.1f}%'
+
+          integrity = f'''\n\n## PD-002 evidence-chain repair\n\nFailed run `30607078461` completed the outcome calculations but did not publish immutable evidence because `command-log.txt` changed after checksum creation. `PD-002` changed only evidence finalization and workflow ordering. The benchmark, scanner versions, normalized decisions, thresholds, primary endpoint, bootstrap seed and McNemar test were unchanged. Under the registered first-successful-post-repair rule, run `{os.environ["FORMAL_RUN_ID"]}` at commit `{os.environ["EXECUTION_SHA"]}` is authoritative. Artifact `{os.environ["ARTIFACT_ID"]}` has digest `{os.environ["ARTIFACT_DIGEST"]}`.\n'''
+          for path in (Path('reports/final-report.md'), Path('reports/executive-summary.md')):
+              text = path.read_text()
+              if 'PD-002 evidence-chain repair' not in text:
+                  path.write_text(text.rstrip() + integrity)
+
+          aliases = {
+              Path('docs/validity-threats.md'): Path('reports/validity-threats.md'),
+              Path('docs/limitations.md'): Path('reports/limitations.md'),
+              Path('docs/reproducibility.md'): Path('reports/reproducibility-report.md'),
+              Path('reports/red-team-results.md'): Path('reports/robustness-results.md'),
+          }
+          for source, destination in aliases.items():
+              assert source.is_file(), source
+              shutil.copyfile(source, destination)
+
+          readme = f'''# Open-Source AI Security Tools Effectiveness Research\n\nResearch status: **FORMAL EVALUATION COMPLETED; FINAL REPOSITORY QC REQUIRED BEFORE RELEASE**\n\n## Primary result\n\nGitleaks reduced attack pass-through by **{pct(boot["attack_pass_through_rate_reduction"])}** relative to the frozen Regex baseline on 240 confirmatory UNSAFE synthetic artifacts. Paired bootstrap 95% CI: **{pct(boot["ci95"][0])}–{pct(boot["ci95"][1])}**. Exact McNemar p-value: **{mc["exact_p_value"]:.6g}**.\n\nDeployment decision: **{deployment}**.\n\n## Evidence identity\n\n- Protocol freeze: `{os.environ["PROTOCOL_FREEZE_SHA"]}`\n- Authoritative execution: `{os.environ["EXECUTION_SHA"]}`\n- Formal run: `{os.environ["FORMAL_RUN_ID"]}`\n- Artifact ID: `{os.environ["ARTIFACT_ID"]}`\n- Artifact digest: `{os.environ["ARTIFACT_DIGEST"]}`\n- Benchmark manifest: `{summary["manifest_sha256"]}`\n- Independent review: **NOT AVAILABLE**\n\n## Scope warning\n\nThis is a controlled synthetic study of secret scanners used as post-generation file controls. It does not demonstrate real incident reduction, live-secret validity, natural LLM-output performance or multilingual semantic understanding. See `reports/final-report.md` and `docs/protocol-deviations.md`.\n'''
+          Path('README.md').write_text(readme)
+
+          manifest = {
+              'schema_version': '2.0',
+              'protocol_freeze_commit': os.environ['PROTOCOL_FREEZE_SHA'],
+              'authoritative_execution_commit': os.environ['EXECUTION_SHA'],
+              'formal_run_id': os.environ['FORMAL_RUN_ID'],
+              'formal_run_url': json.loads(Path('evidence/formal-run/run.json').read_text())['html_url'],
+              'artifact_id': os.environ['ARTIFACT_ID'],
+              'artifact_digest': os.environ['ARTIFACT_DIGEST'],
+              'artifact_zip_sha256': artifact['downloaded_zip_sha256'],
+              'benchmark_manifest_sha256': summary['manifest_sha256'],
+              'primary_pass_through_reduction': boot['attack_pass_through_rate_reduction'],
+              'primary_ci95': boot['ci95'],
+              'primary_mcnemar_p': mc['exact_p_value'],
+              'deployment_thresholds_met': threshold['all_deployment_thresholds_met'],
+              'productization_decision': deployment,
+              'reproducibility': 'PARTIALLY_REPRODUCIBLE',
+              'independent_review': 'NOT_AVAILABLE',
+              'protocol_deviations': ['PD-001', 'PD-002'],
+              'files': [],
+          }
+          roots = [Path('reports'), Path('docs'), Path('data'), Path('results/normalized'), Path('results/metrics'), Path('generated/benchmark'), Path('evidence/formal-run')]
+          explicit = [Path('README.md'), Path('research-manifest.yml'), Path('evidence/protocol-freeze.json'), Path('evidence/protocol-deviation-001.json'), Path('evidence/protocol-deviation-002.json')]
+          files = {path for path in explicit if path.is_file()}
+          for item in roots:
+              files.update(path for path in item.rglob('*') if path.is_file())
+          for path in sorted(files):
+              manifest['files'].append({'path': path.as_posix(), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest(), 'bytes': path.stat().st_size})
+          Path('evidence/evidence-manifest.json').write_text(json.dumps(manifest, indent=2, sort_keys=True) + '\n')
+          print(json.dumps({'manifest_files': len(manifest['files']), 'primary_reduction': boot['attack_pass_through_rate_reduction'], 'deployment': deployment}, indent=2))
+          PY
+
+      - name: Create and verify repository evidence checksums
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/checksums
+          find generated/benchmark results/normalized results/metrics reports docs data evidence \
+            -type f ! -path 'evidence/checksums/*' -print0 \
+            | sort -z | xargs -0 sha256sum > evidence/checksums/SHA256SUMS
+          sha256sum -c evidence/checksums/SHA256SUMS
+
+      - name: Final pre-commit safety and consistency checks
+        run: |
+          set -euo pipefail
+          test ! -d generated/benchmark/cases
+          test ! -d results/raw
+          test -s evidence/evidence-manifest.json
+          test -s reports/executive-summary.md
+          test -s reports/final-report.md
+          test -s reports/robustness-results.md
+          test -s reports/validity-threats.md
+          test -s reports/limitations.md
+          test -s reports/reproducibility-report.md
+          python - <<'PY'
+          import json, re
+          from pathlib import Path
+          manifest = json.loads(Path('evidence/evidence-manifest.json').read_text())
+          summary = json.loads(Path('generated/benchmark/summary.json').read_text())
+          metrics = json.loads(Path('results/metrics/metrics.json').read_text())
+          assert manifest['benchmark_manifest_sha256'] == summary['manifest_sha256']
+          assert manifest['formal_run_id'] == '30607636477'
+          assert manifest['artifact_id'] == '8784217517'
+          assert manifest['artifact_digest'] == 'sha256:296fb7ea1c01f82ac14b19c71ef4a85e3b015839e8cbf4ed542ac85f22f90b27'
+          assert metrics['primary_comparison'] == 'gitleaks versus keyword-regex-baseline'
+          assert 'PD-002' in Path('reports/final-report.md').read_text()
+          patterns = [re.compile('gh' + 'p_' + r'[A-Za-z0-9]{20,}'), re.compile('AK' + 'IA' + r'[A-Z0-9]{16}'), re.compile('sk-' + r'[A-Za-z0-9]{20,}')]
+          for root in (Path('generated/benchmark'), Path('results'), Path('evidence/formal-run'), Path('reports')):
+              for path in root.rglob('*'):
+                  if path.is_file():
+                      text = path.read_text(errors='ignore')
+                      assert not any(pattern.search(text) for pattern in patterns), path
+          print(json.dumps({'final_safety': 'passed', 'manifest_files': len(manifest['files'])}, indent=2))
+          PY
+          git diff --check
+
+      - name: Commit authoritative evidence and reports
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add README.md generated/benchmark results/normalized results/metrics reports docs data evidence
+          git diff --cached --check
+          if git diff --cached --quiet; then
+            echo 'No evidence changes to commit.'
+            exit 0
+          fi
+          git commit -m 'research: publish authoritative formal evidence'
+          git push origin HEAD:research/effectiveness-study
