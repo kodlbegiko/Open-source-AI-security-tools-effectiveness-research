@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0",
+  "score_meaning": "Fitness for this bounded study, not product quality or effectiveness.",
+  "weights": {
+    "problem_importance": 15,
+    "claim_testability": 10,
+    "deployment_relevance": 10,
+    "execution_feasibility": 10,
+    "open_source_version_fixability": 10,
+    "evidence_gap": 10,
+    "tool_comparability": 10,
+    "credible_ground_truth": 10,
+    "cross_language_value": 5,
+    "reproducibility": 5,
+    "safety_ethics": 5
+  },
+  "selected_category": "Secret and Credential Leakage Detection used as an LLM output guardrail",
+  "tools": [
+    {
+      "tool": "Gitleaks",
+      "version": "8.30.1",
+      "scores": {
+        "problem_importance": 14,
+        "claim_testability": 10,
+        "deployment_relevance": 10,
+        "execution_feasibility": 10,
+        "open_source_version_fixability": 10,
+        "evidence_gap": 9,
+        "tool_comparability": 10,
+        "credible_ground_truth": 9,
+        "cross_language_value": 3,
+        "reproducibility": 5,
+        "safety_ethics": 5
+      },
+      "total": 95,
+      "selection": "SELECTED"
+    },
+    {
+      "tool": "TruffleHog",
+      "version": "3.96.0",
+      "scores": {
+        "problem_importance": 14,
+        "claim_testability": 10,
+        "deployment_relevance": 10,
+        "execution_feasibility": 10,
+        "open_source_version_fixability": 8,
+        "evidence_gap": 9,
+        "tool_comparability": 10,
+        "credible_ground_truth": 9,
+        "cross_language_value": 3,
+        "reproducibility": 4,
+        "safety_ethics": 4
+      },
+      "total": 91,
+      "selection": "SELECTED"
+    },
+    {
+      "tool": "detect-secrets",
+      "version": "1.5.0",
+      "scores": {
+        "problem_importance": 14,
+        "claim_testability": 10,
+        "deployment_relevance": 9,
+        "execution_feasibility": 10,
+        "open_source_version_fixability": 10,
+        "evidence_gap": 9,
+        "tool_comparability": 10,
+        "credible_ground_truth": 9,
+        "cross_language_value": 3,
+        "reproducibility": 4,
+        "safety_ethics": 5
+      },
+      "total": 93,
+      "selection": "SELECTED"
+    }
+  ],
+  "gate_1_verdict": "PASSED WITH LIMITATIONS",
+  "effectiveness_tested": false
+}
