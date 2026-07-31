@@ -105,8 +105,11 @@ jobs:
         run: |
           set -euo pipefail
           if gh release view "$TAG" >/dev/null 2>&1; then
-            test "$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${TAG}" --jq '.object.sha')" = "$(git rev-parse "$TAG^{tag}")" || true
-            echo 'Release already exists; verifying assets.'
+            ref_object=$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${TAG}" --jq '.object.sha')
+            test "$ref_object" = "$(git rev-parse "$TAG^{tag}")"
+            test "$(gh release view "$TAG" --json isDraft --jq '.isDraft')" = 'false'
+            test "$(gh release view "$TAG" --json isPrerelease --jq '.isPrerelease')" = 'false'
+            echo 'Release already exists and its tag identity is valid.'
           else
             gh release create "$TAG" \
               --verify-tag \
