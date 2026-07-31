@@ -1,0 +1,67 @@
+name: Research pipeline tests
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.13.14'
+
+      - name: Compile Python and validate shell syntax
+        run: |
+          set -euo pipefail
+          python -m compileall -q adapters analysis baselines benchmark scripts tests
+          bash -n scripts/run_evaluation.sh
+
+      - name: Run unit tests
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -v 2>&1 | tee test-output.txt
+
+      - name: Verify deterministic benchmark digest
+        run: |
+          set -euo pipefail
+          python benchmark/generate_benchmark.py --output /tmp/benchmark-a > /tmp/summary-a.txt
+          python benchmark/generate_benchmark.py --output /tmp/benchmark-b > /tmp/summary-b.txt
+          diff -u /tmp/benchmark-a/summary.json /tmp/benchmark-b/summary.json
+          diff -u /tmp/benchmark-a/manifest.jsonl /tmp/benchmark-b/manifest.jsonl
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          summary = json.loads(Path('/tmp/benchmark-a/summary.json').read_text())
+          assert summary['total'] == 450
+          assert summary['splits'] == {
+              'development': 60,
+              'pilot': 60,
+              'confirmatory': 240,
+              'out-of-distribution': 90,
+          }
+          assert summary['languages'] == {'en': 150, 'zh-TW': 150, 'mixed': 150}
+          assert summary['labels'] == {'SAFE': 225, 'UNSAFE': 225}
+          assert summary['raw_inputs_committable'] is False
+          print(json.dumps(summary, indent=2, sort_keys=True))
+          PY
+
+      - name: Upload test evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: research-pipeline-test-evidence
+          path: test-output.txt
+          if-no-files-found: error
+          retention-days: 30
