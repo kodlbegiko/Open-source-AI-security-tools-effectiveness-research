@@ -1,0 +1,152 @@
+name: Gate 0 and Gate 1 execution probe
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Record runner environment
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/probe
+          {
+            echo "utc_time=$(date -u +%FT%TZ)"
+            uname -a
+            cat /etc/os-release
+            python --version
+            git --version
+            docker --version
+            jq --version
+          } | tee evidence/probe/runner-environment.txt
+
+      - name: Acquire pinned Gitleaks release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          api='https://api.github.com/repos/gitleaks/gitleaks/releases/tags/v8.30.1'
+          curl -fsSL \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H 'Accept: application/vnd.github+json' \
+            "$api" -o /tmp/gitleaks-release.json
+          asset='gitleaks_8.30.1_linux_x64.tar.gz'
+          url=$(jq -r --arg name "$asset" '.assets[] | select(.name == $name) | .browser_download_url' /tmp/gitleaks-release.json)
+          digest=$(jq -r --arg name "$asset" '.assets[] | select(.name == $name) | (.digest // "")' /tmp/gitleaks-release.json)
+          test -n "$url" && test "$url" != null
+          curl -fsSL "$url" -o "/tmp/$asset"
+          echo '551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb  /tmp/gitleaks_8.30.1_linux_x64.tar.gz' | sha256sum -c -
+          mkdir -p tools/gitleaks
+          tar -xzf "/tmp/$asset" -C tools/gitleaks
+          chmod +x tools/gitleaks/gitleaks
+          tools/gitleaks/gitleaks version | tee evidence/probe/gitleaks-version.txt
+          printf 'api_digest=%s\n' "$digest" >> evidence/probe/gitleaks-version.txt
+
+      - name: Acquire pinned TruffleHog release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          api='https://api.github.com/repos/trufflesecurity/trufflehog/releases/tags/v3.96.0'
+          curl -fsSL \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H 'Accept: application/vnd.github+json' \
+            "$api" -o /tmp/trufflehog-release.json
+          asset='trufflehog_3.96.0_linux_amd64.tar.gz'
+          url=$(jq -r --arg name "$asset" '.assets[] | select(.name == $name) | .browser_download_url' /tmp/trufflehog-release.json)
+          digest=$(jq -r --arg name "$asset" '.assets[] | select(.name == $name) | (.digest // "")' /tmp/trufflehog-release.json)
+          test -n "$url" && test "$url" != null
+          curl -fsSL "$url" -o "/tmp/$asset"
+          if [[ "$digest" == sha256:* ]]; then
+            expected=${digest#sha256:}
+            echo "$expected  /tmp/$asset" | sha256sum -c -
+          else
+            echo 'GitHub API did not expose an asset digest; acquisition remains provisional.' | tee evidence/probe/trufflehog-digest-warning.txt
+          fi
+          mkdir -p tools/trufflehog
+          tar -xzf "/tmp/$asset" -C tools/trufflehog
+          chmod +x tools/trufflehog/trufflehog
+          tools/trufflehog/trufflehog --version | tee evidence/probe/trufflehog-version.txt
+          printf 'api_digest=%s\n' "$digest" >> evidence/probe/trufflehog-version.txt
+
+      - name: Install pinned detect-secrets release
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check 'detect-secrets==1.5.0'
+          detect-secrets --version | tee evidence/probe/detect-secrets-version.txt
+          python -m pip freeze | grep -E '^(detect-secrets|PyYAML)=' | tee evidence/probe/python-packages.txt
+
+      - name: Create non-live synthetic fixture
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/probe/fixture
+          cat > evidence/probe/fixture/sample.txt <<'EOF'
+          Synthetic credentials for defensive scanner testing only.
+          aws_access_key_id = AKIAIOSFODNN7EXAMPLE
+          aws_secret_access_key = wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+          github_token_example = ghp_000000000000000000000000000000000000
+          benign_reference = API_KEY_DOCUMENTATION_PLACEHOLDER
+          EOF
+
+      - name: Run tool smoke tests
+        run: |
+          set -euo pipefail
+          tools/gitleaks/gitleaks dir evidence/probe/fixture \
+            --no-banner \
+            --exit-code 0 \
+            --report-format json \
+            --report-path evidence/probe/gitleaks-results.json
+
+          tools/trufflehog/trufflehog filesystem \
+            --directory evidence/probe/fixture \
+            --no-verification \
+            --json > evidence/probe/trufflehog-results.jsonl
+
+          detect-secrets scan \
+            --all-files \
+            --no-verify \
+            evidence/probe/fixture > evidence/probe/detect-secrets-results.json
+
+          test -s evidence/probe/gitleaks-results.json
+          test -s evidence/probe/trufflehog-results.jsonl
+          test -s evidence/probe/detect-secrets-results.json
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          json.loads(Path('evidence/probe/gitleaks-results.json').read_text())
+          json.loads(Path('evidence/probe/detect-secrets-results.json').read_text())
+          for line in Path('evidence/probe/trufflehog-results.jsonl').read_text().splitlines():
+              if line.strip():
+                  json.loads(line)
+          print('all smoke-test outputs are parseable')
+          PY
+
+      - name: Create evidence checksums
+        run: |
+          set -euo pipefail
+          find evidence/probe -type f -print0 | sort -z | xargs -0 sha256sum > evidence/probe/SHA256SUMS
+          cat evidence/probe/SHA256SUMS
+
+      - name: Upload probe evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: gate0-gate1-probe-evidence
+          path: evidence/probe
+          if-no-files-found: error
+          retention-days: 30
