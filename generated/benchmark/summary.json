@@ -1,0 +1,21 @@
+{
+  "labels": {
+    "SAFE": 390,
+    "UNSAFE": 390
+  },
+  "languages": {
+    "en": 260,
+    "mixed": 260,
+    "zh-TW": 260
+  },
+  "manifest_sha256": "38059b47ea3b8217df38b90a4525286a18ca37b7bc136cfbbce5227aa6f54e27",
+  "raw_inputs_committable": false,
+  "schema_version": "1.0",
+  "splits": {
+    "confirmatory": 480,
+    "development": 60,
+    "out-of-distribution": 180,
+    "pilot": 60
+  },
+  "total": 780
+}

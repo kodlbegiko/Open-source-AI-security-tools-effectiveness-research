@@ -1,0 +1,2922 @@
+{
+  "fail_open": true,
+  "metrics": {
+    "detect-secrets": {
+      "language:en": {
+        "attack_block_rate": 0.4307692307692308,
+        "attack_block_rate_ci95": [
+          0.34884097788731017,
+          0.5166715459703803
+        ],
+        "attack_pass_through_rate": 0.5692307692307692,
+        "balanced_accuracy": 0.6653846153846155,
+        "benign_block_rate": 0.1,
+        "benign_block_rate_ci95": [
+          0.05937548801409503,
+          0.1635857609414501
+        ],
+        "f1": 0.5628140703517588,
+        "false_negative_rate": 0.5692307692307692,
+        "false_positive_rate": 0.1,
+        "fn": 74,
+        "fp": 13,
+        "mcc": 0.3745650283561057,
+        "n": 260,
+        "precision": 0.8115942028985508,
+        "recall": 0.4307692307692308,
+        "specificity": 0.9,
+        "tn": 117,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 56
+      },
+      "language:mixed": {
+        "attack_block_rate": 0.4230769230769231,
+        "attack_block_rate_ci95": [
+          0.34155640687048716,
+          0.5090130640825022
+        ],
+        "attack_pass_through_rate": 0.5769230769230769,
+        "balanced_accuracy": 0.6615384615384615,
+        "benign_block_rate": 0.1,
+        "benign_block_rate_ci95": [
+          0.05937548801409503,
+          0.1635857609414501
+        ],
+        "f1": 0.5555555555555556,
+        "false_negative_rate": 0.5769230769230769,
+        "false_positive_rate": 0.1,
+        "fn": 75,
+        "fp": 13,
+        "mcc": 0.36757352205735255,
+        "n": 260,
+        "precision": 0.8088235294117647,
+        "recall": 0.4230769230769231,
+        "specificity": 0.9,
+        "tn": 117,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 55
+      },
+      "language:zh-TW": {
+        "attack_block_rate": 0.4307692307692308,
+        "attack_block_rate_ci95": [
+          0.34884097788731017,
+          0.5166715459703803
+        ],
+        "attack_pass_through_rate": 0.5692307692307692,
+        "balanced_accuracy": 0.6653846153846155,
+        "benign_block_rate": 0.1,
+        "benign_block_rate_ci95": [
+          0.05937548801409503,
+          0.1635857609414501
+        ],
+        "f1": 0.5628140703517588,
+        "false_negative_rate": 0.5692307692307692,
+        "false_positive_rate": 0.1,
+        "fn": 74,
+        "fp": 13,
+        "mcc": 0.3745650283561057,
+        "n": 260,
+        "precision": 0.8115942028985508,
+        "recall": 0.4307692307692308,
+        "specificity": 0.9,
+        "tn": 117,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 56
+      },
+      "overall": {
+        "attack_block_rate": 0.4282051282051282,
+        "attack_block_rate_ci95": [
+          0.3800313873024377,
+          0.47777941766541776
+        ],
+        "attack_pass_through_rate": 0.5717948717948718,
+        "balanced_accuracy": 0.6641025641025641,
+        "benign_block_rate": 0.1,
+        "benign_block_rate_ci95": [
+          0.07401732243386254,
+          0.1337857338156179
+        ],
+        "f1": 0.5604026845637584,
+        "false_negative_rate": 0.5717948717948718,
+        "false_positive_rate": 0.1,
+        "fn": 223,
+        "fp": 39,
+        "mcc": 0.37223774900109363,
+        "n": 780,
+        "precision": 0.8106796116504854,
+        "recall": 0.4282051282051282,
+        "specificity": 0.9,
+        "tn": 351,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 167
+      },
+      "split:confirmatory": {
+        "attack_block_rate": 0.4083333333333333,
+        "attack_block_rate_ci95": [
+          0.3480669188526184,
+          0.4714879664700007
+        ],
+        "attack_pass_through_rate": 0.5916666666666667,
+        "balanced_accuracy": 0.6541666666666667,
+        "benign_block_rate": 0.1,
+        "benign_block_rate_ci95": [
+          0.06812353039342264,
+          0.14447960555982445
+        ],
+        "f1": 0.5414364640883977,
+        "false_negative_rate": 0.5916666666666667,
+        "false_positive_rate": 0.1,
+        "fn": 142,
+        "fp": 24,
+        "mcc": 0.3540872517447565,
+        "n": 480,
+        "precision": 0.8032786885245902,
+        "recall": 0.4083333333333333,
+        "specificity": 0.9,
+        "tn": 216,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 98
+      },
+      "split:confirmatory|language:en": {
+        "attack_block_rate": 0.4125,
+        "attack_block_rate_ci95": [
+          0.3110585761276188,
+          0.5219595965410984
+        ],
+        "attack_pass_through_rate": 0.5875,
+        "balanced_accuracy": 0.65625,
+        "benign_block_rate": 0.1,
+        "benign_block_rate_ci95": [
+          0.05154761556738083,
+          0.18510688806104086
+        ],
+        "f1": 0.5454545454545455,
+        "false_negative_rate": 0.5875,
+        "false_positive_rate": 0.1,
+        "fn": 47,
+        "fp": 8,
+        "mcc": 0.35791063199631734,
+        "n": 160,
+        "precision": 0.8048780487804879,
+        "recall": 0.4125,
+        "specificity": 0.9,
+        "tn": 72,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 33
+      },
+      "split:confirmatory|language:mixed": {
+        "attack_block_rate": 0.4,
+        "attack_block_rate_ci95": [
+          0.2996182759587093,
+          0.5095453499483961
+        ],
+        "attack_pass_through_rate": 0.6,
+        "balanced_accuracy": 0.65,
+        "benign_block_rate": 0.1,
+        "benign_block_rate_ci95": [
+          0.05154761556738083,
+          0.18510688806104086
+        ],
+        "f1": 0.5333333333333333,
+        "false_negative_rate": 0.6,
+        "false_positive_rate": 0.1,
+        "fn": 48,
+        "fp": 8,
+        "mcc": 0.34641016151377546,
+        "n": 160,
+        "precision": 0.8,
+        "recall": 0.4,
+        "specificity": 0.9,
+        "tn": 72,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 32
+      },
+      "split:confirmatory|language:zh-TW": {
+        "attack_block_rate": 0.4125,
+        "attack_block_rate_ci95": [
+          0.3110585761276188,
+          0.5219595965410984
+        ],
+        "attack_pass_through_rate": 0.5875,
+        "balanced_accuracy": 0.65625,
+        "benign_block_rate": 0.1,
+        "benign_block_rate_ci95": [
+          0.05154761556738083,
+          0.18510688806104086
+        ],
+        "f1": 0.5454545454545455,
+        "false_negative_rate": 0.5875,
+        "false_positive_rate": 0.1,
+        "fn": 47,
+        "fp": 8,
+        "mcc": 0.35791063199631734,
+        "n": 160,
+        "precision": 0.8048780487804879,
+        "recall": 0.4125,
+        "specificity": 0.9,
+        "tn": 72,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 33
+      },
+      "split:development": {
+        "attack_block_rate": 0.4,
+        "attack_block_rate_ci95": [
+          0.24590628116801852,
+          0.5767963974667752
+        ],
+        "attack_pass_through_rate": 0.6,
+        "balanced_accuracy": 0.65,
+        "benign_block_rate": 0.1,
+        "benign_block_rate_ci95": [
+          0.03459988874733419,
+          0.25621082579184085
+        ],
+        "f1": 0.5333333333333333,
+        "false_negative_rate": 0.6,
+        "false_positive_rate": 0.1,
+        "fn": 18,
+        "fp": 3,
+        "mcc": 0.34641016151377546,
+        "n": 60,
+        "precision": 0.8,
+        "recall": 0.4,
+        "specificity": 0.9,
+        "tn": 27,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 12
+      },
+      "split:development|language:en": {
+        "attack_block_rate": 0.4,
+        "attack_block_rate_ci95": [
+          0.16818032970623614,
+          0.6873262302663417
+        ],
+        "attack_pass_through_rate": 0.6,
+        "balanced_accuracy": 0.65,
+        "benign_block_rate": 0.1,
+        "benign_block_rate_ci95": [
+          0.017876213095072896,
+          0.4041500267952385
+        ],
+        "f1": 0.5333333333333333,
+        "false_negative_rate": 0.6,
+        "false_positive_rate": 0.1,
+        "fn": 6,
+        "fp": 1,
+        "mcc": 0.34641016151377546,
+        "n": 20,
+        "precision": 0.8,
+        "recall": 0.4,
+        "specificity": 0.9,
+        "tn": 9,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 4
+      },
+      "split:development|language:mixed": {
+        "attack_block_rate": 0.4,
+        "attack_block_rate_ci95": [
+          0.16818032970623614,
+          0.6873262302663417
+        ],
+        "attack_pass_through_rate": 0.6,
+        "balanced_accuracy": 0.65,
+        "benign_block_rate": 0.1,
+        "benign_block_rate_ci95": [
+          0.017876213095072896,
+          0.4041500267952385
+        ],
+        "f1": 0.5333333333333333,
+        "false_negative_rate": 0.6,
+        "false_positive_rate": 0.1,
+        "fn": 6,
+        "fp": 1,
+        "mcc": 0.34641016151377546,
+        "n": 20,
+        "precision": 0.8,
+        "recall": 0.4,
+        "specificity": 0.9,
+        "tn": 9,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 4
+      },
+      "split:development|language:zh-TW": {
+        "attack_block_rate": 0.4,
+        "attack_block_rate_ci95": [
+          0.16818032970623614,
+          0.6873262302663417
+        ],
+        "attack_pass_through_rate": 0.6,
+        "balanced_accuracy": 0.65,
+        "benign_block_rate": 0.1,
+        "benign_block_rate_ci95": [
+          0.017876213095072896,
+          0.4041500267952385
+        ],
+        "f1": 0.5333333333333333,
+        "false_negative_rate": 0.6,
+        "false_positive_rate": 0.1,
+        "fn": 6,
+        "fp": 1,
+        "mcc": 0.34641016151377546,
+        "n": 20,
+        "precision": 0.8,
+        "recall": 0.4,
+        "specificity": 0.9,
+        "tn": 9,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 4
+      },
+      "split:out-of-distribution": {
+        "attack_block_rate": 0.5,
+        "attack_block_rate_ci95": [
+          0.3988372282354734,
+          0.6011627717645266
+        ],
+        "attack_pass_through_rate": 0.5,
+        "balanced_accuracy": 0.7,
+        "benign_block_rate": 0.1,
+        "benign_block_rate_ci95": [
+          0.05350675169712493,
+          0.17924174875433652
+        ],
+        "f1": 0.625,
+        "false_negative_rate": 0.5,
+        "false_positive_rate": 0.1,
+        "fn": 45,
+        "fp": 9,
+        "mcc": 0.4364357804719847,
+        "n": 180,
+        "precision": 0.8333333333333334,
+        "recall": 0.5,
+        "specificity": 0.9,
+        "tn": 81,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 45
+      },
+      "split:out-of-distribution|language:en": {
+        "attack_block_rate": 0.5,
+        "attack_block_rate_ci95": [
+          0.33154125640533766,
+          0.6684587435946623
+        ],
+        "attack_pass_through_rate": 0.5,
+        "balanced_accuracy": 0.7,
+        "benign_block_rate": 0.1,
+        "benign_block_rate_ci95": [
+          0.03459988874733419,
+          0.25621082579184085
+        ],
+        "f1": 0.625,
+        "false_negative_rate": 0.5,
+        "false_positive_rate": 0.1,
+        "fn": 15,
+        "fp": 3,
+        "mcc": 0.4364357804719848,
+        "n": 60,
+        "precision": 0.8333333333333334,
+        "recall": 0.5,
+        "specificity": 0.9,
+        "tn": 27,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 15
+      },
+      "split:out-of-distribution|language:mixed": {
+        "attack_block_rate": 0.5,
+        "attack_block_rate_ci95": [
+          0.33154125640533766,
+          0.6684587435946623
+        ],
+        "attack_pass_through_rate": 0.5,
+        "balanced_accuracy": 0.7,
+        "benign_block_rate": 0.1,
+        "benign_block_rate_ci95": [
+          0.03459988874733419,
+          0.25621082579184085
+        ],
+        "f1": 0.625,
+        "false_negative_rate": 0.5,
+        "false_positive_rate": 0.1,
+        "fn": 15,
+        "fp": 3,
+        "mcc": 0.4364357804719848,
+        "n": 60,
+        "precision": 0.8333333333333334,
+        "recall": 0.5,
+        "specificity": 0.9,
+        "tn": 27,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 15
+      },
+      "split:out-of-distribution|language:zh-TW": {
+        "attack_block_rate": 0.5,
+        "attack_block_rate_ci95": [
+          0.33154125640533766,
+          0.6684587435946623
+        ],
+        "attack_pass_through_rate": 0.5,
+        "balanced_accuracy": 0.7,
+        "benign_block_rate": 0.1,
+        "benign_block_rate_ci95": [
+          0.03459988874733419,
+          0.25621082579184085
+        ],
+        "f1": 0.625,
+        "false_negative_rate": 0.5,
+        "false_positive_rate": 0.1,
+        "fn": 15,
+        "fp": 3,
+        "mcc": 0.4364357804719848,
+        "n": 60,
+        "precision": 0.8333333333333334,
+        "recall": 0.5,
+        "specificity": 0.9,
+        "tn": 27,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 15
+      },
+      "split:pilot": {
+        "attack_block_rate": 0.4,
+        "attack_block_rate_ci95": [
+          0.24590628116801852,
+          0.5767963974667752
+        ],
+        "attack_pass_through_rate": 0.6,
+        "balanced_accuracy": 0.65,
+        "benign_block_rate": 0.1,
+        "benign_block_rate_ci95": [
+          0.03459988874733419,
+          0.25621082579184085
+        ],
+        "f1": 0.5333333333333333,
+        "false_negative_rate": 0.6,
+        "false_positive_rate": 0.1,
+        "fn": 18,
+        "fp": 3,
+        "mcc": 0.34641016151377546,
+        "n": 60,
+        "precision": 0.8,
+        "recall": 0.4,
+        "specificity": 0.9,
+        "tn": 27,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 12
+      },
+      "split:pilot|language:en": {
+        "attack_block_rate": 0.4,
+        "attack_block_rate_ci95": [
+          0.16818032970623614,
+          0.6873262302663417
+        ],
+        "attack_pass_through_rate": 0.6,
+        "balanced_accuracy": 0.65,
+        "benign_block_rate": 0.1,
+        "benign_block_rate_ci95": [
+          0.017876213095072896,
+          0.4041500267952385
+        ],
+        "f1": 0.5333333333333333,
+        "false_negative_rate": 0.6,
+        "false_positive_rate": 0.1,
+        "fn": 6,
+        "fp": 1,
+        "mcc": 0.34641016151377546,
+        "n": 20,
+        "precision": 0.8,
+        "recall": 0.4,
+        "specificity": 0.9,
+        "tn": 9,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 4
+      },
+      "split:pilot|language:mixed": {
+        "attack_block_rate": 0.4,
+        "attack_block_rate_ci95": [
+          0.16818032970623614,
+          0.6873262302663417
+        ],
+        "attack_pass_through_rate": 0.6,
+        "balanced_accuracy": 0.65,
+        "benign_block_rate": 0.1,
+        "benign_block_rate_ci95": [
+          0.017876213095072896,
+          0.4041500267952385
+        ],
+        "f1": 0.5333333333333333,
+        "false_negative_rate": 0.6,
+        "false_positive_rate": 0.1,
+        "fn": 6,
+        "fp": 1,
+        "mcc": 0.34641016151377546,
+        "n": 20,
+        "precision": 0.8,
+        "recall": 0.4,
+        "specificity": 0.9,
+        "tn": 9,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 4
+      },
+      "split:pilot|language:zh-TW": {
+        "attack_block_rate": 0.4,
+        "attack_block_rate_ci95": [
+          0.16818032970623614,
+          0.6873262302663417
+        ],
+        "attack_pass_through_rate": 0.6,
+        "balanced_accuracy": 0.65,
+        "benign_block_rate": 0.1,
+        "benign_block_rate_ci95": [
+          0.017876213095072896,
+          0.4041500267952385
+        ],
+        "f1": 0.5333333333333333,
+        "false_negative_rate": 0.6,
+        "false_positive_rate": 0.1,
+        "fn": 6,
+        "fp": 1,
+        "mcc": 0.34641016151377546,
+        "n": 20,
+        "precision": 0.8,
+        "recall": 0.4,
+        "specificity": 0.9,
+        "tn": 9,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 4
+      }
+    },
+    "gitleaks": {
+      "language:en": {
+        "attack_block_rate": 0.9692307692307692,
+        "attack_block_rate_ci95": [
+          0.9235555115015023,
+          0.9879707156852621
+        ],
+        "attack_pass_through_rate": 0.03076923076923077,
+        "balanced_accuracy": 0.9846153846153847,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.028701561194431423
+        ],
+        "f1": 0.9843749999999999,
+        "false_negative_rate": 0.03076923076923077,
+        "false_positive_rate": 0.0,
+        "fn": 4,
+        "fp": 0,
+        "mcc": 0.9696899027331812,
+        "n": 260,
+        "precision": 1.0,
+        "recall": 0.9692307692307692,
+        "specificity": 1.0,
+        "tn": 130,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 126
+      },
+      "language:mixed": {
+        "attack_block_rate": 0.9461538461538461,
+        "attack_block_rate_ci95": [
+          0.8930220274608427,
+          0.9736750410118185
+        ],
+        "attack_pass_through_rate": 0.05384615384615385,
+        "balanced_accuracy": 0.9730769230769231,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.028701561194431423
+        ],
+        "f1": 0.9723320158102766,
+        "false_negative_rate": 0.05384615384615385,
+        "false_positive_rate": 0.0,
+        "fn": 7,
+        "fp": 0,
+        "mcc": 0.947528479243818,
+        "n": 260,
+        "precision": 1.0,
+        "recall": 0.9461538461538461,
+        "specificity": 1.0,
+        "tn": 130,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 123
+      },
+      "language:zh-TW": {
+        "attack_block_rate": 0.9461538461538461,
+        "attack_block_rate_ci95": [
+          0.8930220274608427,
+          0.9736750410118185
+        ],
+        "attack_pass_through_rate": 0.05384615384615385,
+        "balanced_accuracy": 0.9730769230769231,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.028701561194431423
+        ],
+        "f1": 0.9723320158102766,
+        "false_negative_rate": 0.05384615384615385,
+        "false_positive_rate": 0.0,
+        "fn": 7,
+        "fp": 0,
+        "mcc": 0.947528479243818,
+        "n": 260,
+        "precision": 1.0,
+        "recall": 0.9461538461538461,
+        "specificity": 1.0,
+        "tn": 130,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 123
+      },
+      "overall": {
+        "attack_block_rate": 0.9538461538461539,
+        "attack_block_rate_ci95": [
+          0.9282299196451643,
+          0.9706089203794638
+        ],
+        "attack_pass_through_rate": 0.046153846153846156,
+        "balanced_accuracy": 0.976923076923077,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.009753820311850517
+        ],
+        "f1": 0.9763779527559054,
+        "false_negative_rate": 0.046153846153846156,
+        "false_positive_rate": 0.0,
+        "fn": 18,
+        "fp": 0,
+        "mcc": 0.954863710632231,
+        "n": 780,
+        "precision": 1.0,
+        "recall": 0.9538461538461539,
+        "specificity": 1.0,
+        "tn": 390,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 372
+      },
+      "split:confirmatory": {
+        "attack_block_rate": 0.9291666666666667,
+        "attack_block_rate_ci95": [
+          0.8895031557540064,
+          0.9553080629628224
+        ],
+        "attack_pass_through_rate": 0.07083333333333333,
+        "balanced_accuracy": 0.9645833333333333,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.015753919941558815
+        ],
+        "f1": 0.9632829373650108,
+        "false_negative_rate": 0.07083333333333333,
+        "false_positive_rate": 0.0,
+        "fn": 17,
+        "fp": 0,
+        "mcc": 0.9315064573880538,
+        "n": 480,
+        "precision": 1.0,
+        "recall": 0.9291666666666667,
+        "specificity": 1.0,
+        "tn": 240,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 223
+      },
+      "split:confirmatory|language:en": {
+        "attack_block_rate": 0.95,
+        "attack_block_rate_ci95": [
+          0.8783772379535698,
+          0.9803864454644556
+        ],
+        "attack_pass_through_rate": 0.05,
+        "balanced_accuracy": 0.975,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.0458181295355271
+        ],
+        "f1": 0.9743589743589743,
+        "false_negative_rate": 0.05,
+        "false_positive_rate": 0.0,
+        "fn": 4,
+        "fp": 0,
+        "mcc": 0.9511897312113419,
+        "n": 160,
+        "precision": 1.0,
+        "recall": 0.95,
+        "specificity": 1.0,
+        "tn": 80,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 76
+      },
+      "split:confirmatory|language:mixed": {
+        "attack_block_rate": 0.925,
+        "attack_block_rate_ci95": [
+          0.8458798391878072,
+          0.9651747507069949
+        ],
+        "attack_pass_through_rate": 0.075,
+        "balanced_accuracy": 0.9625,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.0458181295355271
+        ],
+        "f1": 0.961038961038961,
+        "false_negative_rate": 0.075,
+        "false_positive_rate": 0.0,
+        "fn": 6,
+        "fp": 0,
+        "mcc": 0.9276125895432153,
+        "n": 160,
+        "precision": 1.0,
+        "recall": 0.925,
+        "specificity": 1.0,
+        "tn": 80,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 74
+      },
+      "split:confirmatory|language:zh-TW": {
+        "attack_block_rate": 0.9125,
+        "attack_block_rate_ci95": [
+          0.8302320449152499,
+          0.9569679982179401
+        ],
+        "attack_pass_through_rate": 0.0875,
+        "balanced_accuracy": 0.95625,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.0458181295355271
+        ],
+        "f1": 0.9542483660130718,
+        "false_negative_rate": 0.0875,
+        "false_positive_rate": 0.0,
+        "fn": 7,
+        "fp": 0,
+        "mcc": 0.9160133513055991,
+        "n": 160,
+        "precision": 1.0,
+        "recall": 0.9125,
+        "specificity": 1.0,
+        "tn": 80,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 73
+      },
+      "split:development": {
+        "attack_block_rate": 1.0,
+        "attack_block_rate_ci95": [
+          0.8864866068260312,
+          0.9999999999999999
+        ],
+        "attack_pass_through_rate": 0.0,
+        "balanced_accuracy": 1.0,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.11351339317396876
+        ],
+        "f1": 1.0,
+        "false_negative_rate": 0.0,
+        "false_positive_rate": 0.0,
+        "fn": 0,
+        "fp": 0,
+        "mcc": 1.0,
+        "n": 60,
+        "precision": 1.0,
+        "recall": 1.0,
+        "specificity": 1.0,
+        "tn": 30,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 30
+      },
+      "split:development|language:en": {
+        "attack_block_rate": 1.0,
+        "attack_block_rate_ci95": [
+          0.7224672001371107,
+          0.9999999999999999
+        ],
+        "attack_pass_through_rate": 0.0,
+        "balanced_accuracy": 1.0,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.2775327998628892
+        ],
+        "f1": 1.0,
+        "false_negative_rate": 0.0,
+        "false_positive_rate": 0.0,
+        "fn": 0,
+        "fp": 0,
+        "mcc": 1.0,
+        "n": 20,
+        "precision": 1.0,
+        "recall": 1.0,
+        "specificity": 1.0,
+        "tn": 10,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 10
+      },
+      "split:development|language:mixed": {
+        "attack_block_rate": 1.0,
+        "attack_block_rate_ci95": [
+          0.7224672001371107,
+          0.9999999999999999
+        ],
+        "attack_pass_through_rate": 0.0,
+        "balanced_accuracy": 1.0,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.2775327998628892
+        ],
+        "f1": 1.0,
+        "false_negative_rate": 0.0,
+        "false_positive_rate": 0.0,
+        "fn": 0,
+        "fp": 0,
+        "mcc": 1.0,
+        "n": 20,
+        "precision": 1.0,
+        "recall": 1.0,
+        "specificity": 1.0,
+        "tn": 10,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 10
+      },
+      "split:development|language:zh-TW": {
+        "attack_block_rate": 1.0,
+        "attack_block_rate_ci95": [
+          0.7224672001371107,
+          0.9999999999999999
+        ],
+        "attack_pass_through_rate": 0.0,
+        "balanced_accuracy": 1.0,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.2775327998628892
+        ],
+        "f1": 1.0,
+        "false_negative_rate": 0.0,
+        "false_positive_rate": 0.0,
+        "fn": 0,
+        "fp": 0,
+        "mcc": 1.0,
+        "n": 20,
+        "precision": 1.0,
+        "recall": 1.0,
+        "specificity": 1.0,
+        "tn": 10,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 10
+      },
+      "split:out-of-distribution": {
+        "attack_block_rate": 1.0,
+        "attack_block_rate_ci95": [
+          0.9590643744356734,
+          1.0
+        ],
+        "attack_pass_through_rate": 0.0,
+        "balanced_accuracy": 1.0,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.04093562556432678
+        ],
+        "f1": 1.0,
+        "false_negative_rate": 0.0,
+        "false_positive_rate": 0.0,
+        "fn": 0,
+        "fp": 0,
+        "mcc": 1.0,
+        "n": 180,
+        "precision": 1.0,
+        "recall": 1.0,
+        "specificity": 1.0,
+        "tn": 90,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 90
+      },
+      "split:out-of-distribution|language:en": {
+        "attack_block_rate": 1.0,
+        "attack_block_rate_ci95": [
+          0.8864866068260312,
+          0.9999999999999999
+        ],
+        "attack_pass_through_rate": 0.0,
+        "balanced_accuracy": 1.0,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.11351339317396876
+        ],
+        "f1": 1.0,
+        "false_negative_rate": 0.0,
+        "false_positive_rate": 0.0,
+        "fn": 0,
+        "fp": 0,
+        "mcc": 1.0,
+        "n": 60,
+        "precision": 1.0,
+        "recall": 1.0,
+        "specificity": 1.0,
+        "tn": 30,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 30
+      },
+      "split:out-of-distribution|language:mixed": {
+        "attack_block_rate": 1.0,
+        "attack_block_rate_ci95": [
+          0.8864866068260312,
+          0.9999999999999999
+        ],
+        "attack_pass_through_rate": 0.0,
+        "balanced_accuracy": 1.0,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.11351339317396876
+        ],
+        "f1": 1.0,
+        "false_negative_rate": 0.0,
+        "false_positive_rate": 0.0,
+        "fn": 0,
+        "fp": 0,
+        "mcc": 1.0,
+        "n": 60,
+        "precision": 1.0,
+        "recall": 1.0,
+        "specificity": 1.0,
+        "tn": 30,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 30
+      },
+      "split:out-of-distribution|language:zh-TW": {
+        "attack_block_rate": 1.0,
+        "attack_block_rate_ci95": [
+          0.8864866068260312,
+          0.9999999999999999
+        ],
+        "attack_pass_through_rate": 0.0,
+        "balanced_accuracy": 1.0,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.11351339317396876
+        ],
+        "f1": 1.0,
+        "false_negative_rate": 0.0,
+        "false_positive_rate": 0.0,
+        "fn": 0,
+        "fp": 0,
+        "mcc": 1.0,
+        "n": 60,
+        "precision": 1.0,
+        "recall": 1.0,
+        "specificity": 1.0,
+        "tn": 30,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 30
+      },
+      "split:pilot": {
+        "attack_block_rate": 0.9666666666666667,
+        "attack_block_rate_ci95": [
+          0.8332960900859082,
+          0.9940914096183874
+        ],
+        "attack_pass_through_rate": 0.03333333333333333,
+        "balanced_accuracy": 0.9833333333333334,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.11351339317396876
+        ],
+        "f1": 0.983050847457627,
+        "false_negative_rate": 0.03333333333333333,
+        "false_positive_rate": 0.0,
+        "fn": 1,
+        "fp": 0,
+        "mcc": 0.9672041516493516,
+        "n": 60,
+        "precision": 1.0,
+        "recall": 0.9666666666666667,
+        "specificity": 1.0,
+        "tn": 30,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 29
+      },
+      "split:pilot|language:en": {
+        "attack_block_rate": 1.0,
+        "attack_block_rate_ci95": [
+          0.7224672001371107,
+          0.9999999999999999
+        ],
+        "attack_pass_through_rate": 0.0,
+        "balanced_accuracy": 1.0,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.2775327998628892
+        ],
+        "f1": 1.0,
+        "false_negative_rate": 0.0,
+        "false_positive_rate": 0.0,
+        "fn": 0,
+        "fp": 0,
+        "mcc": 1.0,
+        "n": 20,
+        "precision": 1.0,
+        "recall": 1.0,
+        "specificity": 1.0,
+        "tn": 10,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 10
+      },
+      "split:pilot|language:mixed": {
+        "attack_block_rate": 0.9,
+        "attack_block_rate_ci95": [
+          0.5958499732047615,
+          0.9821237869049271
+        ],
+        "attack_pass_through_rate": 0.1,
+        "balanced_accuracy": 0.95,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.2775327998628892
+        ],
+        "f1": 0.9473684210526316,
+        "false_negative_rate": 0.1,
+        "false_positive_rate": 0.0,
+        "fn": 1,
+        "fp": 0,
+        "mcc": 0.9045340337332909,
+        "n": 20,
+        "precision": 1.0,
+        "recall": 0.9,
+        "specificity": 1.0,
+        "tn": 10,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 9
+      },
+      "split:pilot|language:zh-TW": {
+        "attack_block_rate": 1.0,
+        "attack_block_rate_ci95": [
+          0.7224672001371107,
+          0.9999999999999999
+        ],
+        "attack_pass_through_rate": 0.0,
+        "balanced_accuracy": 1.0,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.2775327998628892
+        ],
+        "f1": 1.0,
+        "false_negative_rate": 0.0,
+        "false_positive_rate": 0.0,
+        "fn": 0,
+        "fp": 0,
+        "mcc": 1.0,
+        "n": 20,
+        "precision": 1.0,
+        "recall": 1.0,
+        "specificity": 1.0,
+        "tn": 10,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 10
+      }
+    },
+    "keyword-regex-baseline": {
+      "language:en": {
+        "attack_block_rate": 0.5846153846153846,
+        "attack_block_rate_ci95": [
+          0.4986655842030211,
+          0.6657079977486905
+        ],
+        "attack_pass_through_rate": 0.4153846153846154,
+        "balanced_accuracy": 0.7923076923076924,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.028701561194431423
+        ],
+        "f1": 0.7378640776699029,
+        "false_negative_rate": 0.4153846153846154,
+        "false_positive_rate": 0.0,
+        "fn": 54,
+        "fp": 0,
+        "mcc": 0.6426845869171515,
+        "n": 260,
+        "precision": 1.0,
+        "recall": 0.5846153846153846,
+        "specificity": 1.0,
+        "tn": 130,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 76
+      },
+      "language:mixed": {
+        "attack_block_rate": 0.5846153846153846,
+        "attack_block_rate_ci95": [
+          0.4986655842030211,
+          0.6657079977486905
+        ],
+        "attack_pass_through_rate": 0.4153846153846154,
+        "balanced_accuracy": 0.7923076923076924,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.028701561194431423
+        ],
+        "f1": 0.7378640776699029,
+        "false_negative_rate": 0.4153846153846154,
+        "false_positive_rate": 0.0,
+        "fn": 54,
+        "fp": 0,
+        "mcc": 0.6426845869171515,
+        "n": 260,
+        "precision": 1.0,
+        "recall": 0.5846153846153846,
+        "specificity": 1.0,
+        "tn": 130,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 76
+      },
+      "language:zh-TW": {
+        "attack_block_rate": 0.5846153846153846,
+        "attack_block_rate_ci95": [
+          0.4986655842030211,
+          0.6657079977486905
+        ],
+        "attack_pass_through_rate": 0.4153846153846154,
+        "balanced_accuracy": 0.7923076923076924,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.028701561194431423
+        ],
+        "f1": 0.7378640776699029,
+        "false_negative_rate": 0.4153846153846154,
+        "false_positive_rate": 0.0,
+        "fn": 54,
+        "fp": 0,
+        "mcc": 0.6426845869171515,
+        "n": 260,
+        "precision": 1.0,
+        "recall": 0.5846153846153846,
+        "specificity": 1.0,
+        "tn": 130,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 76
+      },
+      "overall": {
+        "attack_block_rate": 0.5846153846153846,
+        "attack_block_rate_ci95": [
+          0.5351145932905751,
+          0.6324655294258811
+        ],
+        "attack_pass_through_rate": 0.4153846153846154,
+        "balanced_accuracy": 0.7923076923076924,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.009753820311850517
+        ],
+        "f1": 0.7378640776699029,
+        "false_negative_rate": 0.4153846153846154,
+        "false_positive_rate": 0.0,
+        "fn": 162,
+        "fp": 0,
+        "mcc": 0.6426845869171515,
+        "n": 780,
+        "precision": 1.0,
+        "recall": 0.5846153846153846,
+        "specificity": 1.0,
+        "tn": 390,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 228
+      },
+      "split:confirmatory": {
+        "attack_block_rate": 0.75,
+        "attack_block_rate_ci95": [
+          0.6915695792009672,
+          0.8005534608282535
+        ],
+        "attack_pass_through_rate": 0.25,
+        "balanced_accuracy": 0.875,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.015753919941558815
+        ],
+        "f1": 0.8571428571428571,
+        "false_negative_rate": 0.25,
+        "false_positive_rate": 0.0,
+        "fn": 60,
+        "fp": 0,
+        "mcc": 0.7745966692414834,
+        "n": 480,
+        "precision": 1.0,
+        "recall": 0.75,
+        "specificity": 1.0,
+        "tn": 240,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 180
+      },
+      "split:confirmatory|language:en": {
+        "attack_block_rate": 0.75,
+        "attack_block_rate_ci95": [
+          0.6451532538076602,
+          0.8319376814245761
+        ],
+        "attack_pass_through_rate": 0.25,
+        "balanced_accuracy": 0.875,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.0458181295355271
+        ],
+        "f1": 0.8571428571428571,
+        "false_negative_rate": 0.25,
+        "false_positive_rate": 0.0,
+        "fn": 20,
+        "fp": 0,
+        "mcc": 0.7745966692414834,
+        "n": 160,
+        "precision": 1.0,
+        "recall": 0.75,
+        "specificity": 1.0,
+        "tn": 80,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 60
+      },
+      "split:confirmatory|language:mixed": {
+        "attack_block_rate": 0.75,
+        "attack_block_rate_ci95": [
+          0.6451532538076602,
+          0.8319376814245761
+        ],
+        "attack_pass_through_rate": 0.25,
+        "balanced_accuracy": 0.875,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.0458181295355271
+        ],
+        "f1": 0.8571428571428571,
+        "false_negative_rate": 0.25,
+        "false_positive_rate": 0.0,
+        "fn": 20,
+        "fp": 0,
+        "mcc": 0.7745966692414834,
+        "n": 160,
+        "precision": 1.0,
+        "recall": 0.75,
+        "specificity": 1.0,
+        "tn": 80,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 60
+      },
+      "split:confirmatory|language:zh-TW": {
+        "attack_block_rate": 0.75,
+        "attack_block_rate_ci95": [
+          0.6451532538076602,
+          0.8319376814245761
+        ],
+        "attack_pass_through_rate": 0.25,
+        "balanced_accuracy": 0.875,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.0458181295355271
+        ],
+        "f1": 0.8571428571428571,
+        "false_negative_rate": 0.25,
+        "false_positive_rate": 0.0,
+        "fn": 20,
+        "fp": 0,
+        "mcc": 0.7745966692414834,
+        "n": 160,
+        "precision": 1.0,
+        "recall": 0.75,
+        "specificity": 1.0,
+        "tn": 80,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 60
+      },
+      "split:development": {
+        "attack_block_rate": 0.8,
+        "attack_block_rate_ci95": [
+          0.6269430358685175,
+          0.9049489282271013
+        ],
+        "attack_pass_through_rate": 0.2,
+        "balanced_accuracy": 0.9,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.11351339317396876
+        ],
+        "f1": 0.888888888888889,
+        "false_negative_rate": 0.2,
+        "false_positive_rate": 0.0,
+        "fn": 6,
+        "fp": 0,
+        "mcc": 0.816496580927726,
+        "n": 60,
+        "precision": 1.0,
+        "recall": 0.8,
+        "specificity": 1.0,
+        "tn": 30,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 24
+      },
+      "split:development|language:en": {
+        "attack_block_rate": 0.8,
+        "attack_block_rate_ci95": [
+          0.49016247153664183,
+          0.9433178485456247
+        ],
+        "attack_pass_through_rate": 0.2,
+        "balanced_accuracy": 0.9,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.2775327998628892
+        ],
+        "f1": 0.888888888888889,
+        "false_negative_rate": 0.2,
+        "false_positive_rate": 0.0,
+        "fn": 2,
+        "fp": 0,
+        "mcc": 0.816496580927726,
+        "n": 20,
+        "precision": 1.0,
+        "recall": 0.8,
+        "specificity": 1.0,
+        "tn": 10,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 8
+      },
+      "split:development|language:mixed": {
+        "attack_block_rate": 0.8,
+        "attack_block_rate_ci95": [
+          0.49016247153664183,
+          0.9433178485456247
+        ],
+        "attack_pass_through_rate": 0.2,
+        "balanced_accuracy": 0.9,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.2775327998628892
+        ],
+        "f1": 0.888888888888889,
+        "false_negative_rate": 0.2,
+        "false_positive_rate": 0.0,
+        "fn": 2,
+        "fp": 0,
+        "mcc": 0.816496580927726,
+        "n": 20,
+        "precision": 1.0,
+        "recall": 0.8,
+        "specificity": 1.0,
+        "tn": 10,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 8
+      },
+      "split:development|language:zh-TW": {
+        "attack_block_rate": 0.8,
+        "attack_block_rate_ci95": [
+          0.49016247153664183,
+          0.9433178485456247
+        ],
+        "attack_pass_through_rate": 0.2,
+        "balanced_accuracy": 0.9,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.2775327998628892
+        ],
+        "f1": 0.888888888888889,
+        "false_negative_rate": 0.2,
+        "false_positive_rate": 0.0,
+        "fn": 2,
+        "fp": 0,
+        "mcc": 0.816496580927726,
+        "n": 20,
+        "precision": 1.0,
+        "recall": 0.8,
+        "specificity": 1.0,
+        "tn": 10,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 8
+      },
+      "split:out-of-distribution": {
+        "attack_block_rate": 0.0,
+        "attack_block_rate_ci95": [
+          0.0,
+          0.04093562556432678
+        ],
+        "attack_pass_through_rate": 1.0,
+        "balanced_accuracy": 0.5,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.04093562556432678
+        ],
+        "f1": null,
+        "false_negative_rate": 1.0,
+        "false_positive_rate": 0.0,
+        "fn": 90,
+        "fp": 0,
+        "mcc": null,
+        "n": 180,
+        "precision": null,
+        "recall": 0.0,
+        "specificity": 1.0,
+        "tn": 90,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 0
+      },
+      "split:out-of-distribution|language:en": {
+        "attack_block_rate": 0.0,
+        "attack_block_rate_ci95": [
+          0.0,
+          0.11351339317396876
+        ],
+        "attack_pass_through_rate": 1.0,
+        "balanced_accuracy": 0.5,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.11351339317396876
+        ],
+        "f1": null,
+        "false_negative_rate": 1.0,
+        "false_positive_rate": 0.0,
+        "fn": 30,
+        "fp": 0,
+        "mcc": null,
+        "n": 60,
+        "precision": null,
+        "recall": 0.0,
+        "specificity": 1.0,
+        "tn": 30,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 0
+      },
+      "split:out-of-distribution|language:mixed": {
+        "attack_block_rate": 0.0,
+        "attack_block_rate_ci95": [
+          0.0,
+          0.11351339317396876
+        ],
+        "attack_pass_through_rate": 1.0,
+        "balanced_accuracy": 0.5,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.11351339317396876
+        ],
+        "f1": null,
+        "false_negative_rate": 1.0,
+        "false_positive_rate": 0.0,
+        "fn": 30,
+        "fp": 0,
+        "mcc": null,
+        "n": 60,
+        "precision": null,
+        "recall": 0.0,
+        "specificity": 1.0,
+        "tn": 30,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 0
+      },
+      "split:out-of-distribution|language:zh-TW": {
+        "attack_block_rate": 0.0,
+        "attack_block_rate_ci95": [
+          0.0,
+          0.11351339317396876
+        ],
+        "attack_pass_through_rate": 1.0,
+        "balanced_accuracy": 0.5,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.11351339317396876
+        ],
+        "f1": null,
+        "false_negative_rate": 1.0,
+        "false_positive_rate": 0.0,
+        "fn": 30,
+        "fp": 0,
+        "mcc": null,
+        "n": 60,
+        "precision": null,
+        "recall": 0.0,
+        "specificity": 1.0,
+        "tn": 30,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 0
+      },
+      "split:pilot": {
+        "attack_block_rate": 0.8,
+        "attack_block_rate_ci95": [
+          0.6269430358685175,
+          0.9049489282271013
+        ],
+        "attack_pass_through_rate": 0.2,
+        "balanced_accuracy": 0.9,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.11351339317396876
+        ],
+        "f1": 0.888888888888889,
+        "false_negative_rate": 0.2,
+        "false_positive_rate": 0.0,
+        "fn": 6,
+        "fp": 0,
+        "mcc": 0.816496580927726,
+        "n": 60,
+        "precision": 1.0,
+        "recall": 0.8,
+        "specificity": 1.0,
+        "tn": 30,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 24
+      },
+      "split:pilot|language:en": {
+        "attack_block_rate": 0.8,
+        "attack_block_rate_ci95": [
+          0.49016247153664183,
+          0.9433178485456247
+        ],
+        "attack_pass_through_rate": 0.2,
+        "balanced_accuracy": 0.9,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.2775327998628892
+        ],
+        "f1": 0.888888888888889,
+        "false_negative_rate": 0.2,
+        "false_positive_rate": 0.0,
+        "fn": 2,
+        "fp": 0,
+        "mcc": 0.816496580927726,
+        "n": 20,
+        "precision": 1.0,
+        "recall": 0.8,
+        "specificity": 1.0,
+        "tn": 10,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 8
+      },
+      "split:pilot|language:mixed": {
+        "attack_block_rate": 0.8,
+        "attack_block_rate_ci95": [
+          0.49016247153664183,
+          0.9433178485456247
+        ],
+        "attack_pass_through_rate": 0.2,
+        "balanced_accuracy": 0.9,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.2775327998628892
+        ],
+        "f1": 0.888888888888889,
+        "false_negative_rate": 0.2,
+        "false_positive_rate": 0.0,
+        "fn": 2,
+        "fp": 0,
+        "mcc": 0.816496580927726,
+        "n": 20,
+        "precision": 1.0,
+        "recall": 0.8,
+        "specificity": 1.0,
+        "tn": 10,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 8
+      },
+      "split:pilot|language:zh-TW": {
+        "attack_block_rate": 0.8,
+        "attack_block_rate_ci95": [
+          0.49016247153664183,
+          0.9433178485456247
+        ],
+        "attack_pass_through_rate": 0.2,
+        "balanced_accuracy": 0.9,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.2775327998628892
+        ],
+        "f1": 0.888888888888889,
+        "false_negative_rate": 0.2,
+        "false_positive_rate": 0.0,
+        "fn": 2,
+        "fp": 0,
+        "mcc": 0.816496580927726,
+        "n": 20,
+        "precision": 1.0,
+        "recall": 0.8,
+        "specificity": 1.0,
+        "tn": 10,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 8
+      }
+    },
+    "no-security-tool": {
+      "language:en": {
+        "attack_block_rate": 0.0,
+        "attack_block_rate_ci95": [
+          0.0,
+          0.028701561194431423
+        ],
+        "attack_pass_through_rate": 1.0,
+        "balanced_accuracy": 0.5,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.028701561194431423
+        ],
+        "f1": null,
+        "false_negative_rate": 1.0,
+        "false_positive_rate": 0.0,
+        "fn": 130,
+        "fp": 0,
+        "mcc": null,
+        "n": 260,
+        "precision": null,
+        "recall": 0.0,
+        "specificity": 1.0,
+        "tn": 130,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 0
+      },
+      "language:mixed": {
+        "attack_block_rate": 0.0,
+        "attack_block_rate_ci95": [
+          0.0,
+          0.028701561194431423
+        ],
+        "attack_pass_through_rate": 1.0,
+        "balanced_accuracy": 0.5,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.028701561194431423
+        ],
+        "f1": null,
+        "false_negative_rate": 1.0,
+        "false_positive_rate": 0.0,
+        "fn": 130,
+        "fp": 0,
+        "mcc": null,
+        "n": 260,
+        "precision": null,
+        "recall": 0.0,
+        "specificity": 1.0,
+        "tn": 130,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 0
+      },
+      "language:zh-TW": {
+        "attack_block_rate": 0.0,
+        "attack_block_rate_ci95": [
+          0.0,
+          0.028701561194431423
+        ],
+        "attack_pass_through_rate": 1.0,
+        "balanced_accuracy": 0.5,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.028701561194431423
+        ],
+        "f1": null,
+        "false_negative_rate": 1.0,
+        "false_positive_rate": 0.0,
+        "fn": 130,
+        "fp": 0,
+        "mcc": null,
+        "n": 260,
+        "precision": null,
+        "recall": 0.0,
+        "specificity": 1.0,
+        "tn": 130,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 0
+      },
+      "overall": {
+        "attack_block_rate": 0.0,
+        "attack_block_rate_ci95": [
+          0.0,
+          0.009753820311850517
+        ],
+        "attack_pass_through_rate": 1.0,
+        "balanced_accuracy": 0.5,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.009753820311850517
+        ],
+        "f1": null,
+        "false_negative_rate": 1.0,
+        "false_positive_rate": 0.0,
+        "fn": 390,
+        "fp": 0,
+        "mcc": null,
+        "n": 780,
+        "precision": null,
+        "recall": 0.0,
+        "specificity": 1.0,
+        "tn": 390,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 0
+      },
+      "split:confirmatory": {
+        "attack_block_rate": 0.0,
+        "attack_block_rate_ci95": [
+          0.0,
+          0.015753919941558815
+        ],
+        "attack_pass_through_rate": 1.0,
+        "balanced_accuracy": 0.5,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.015753919941558815
+        ],
+        "f1": null,
+        "false_negative_rate": 1.0,
+        "false_positive_rate": 0.0,
+        "fn": 240,
+        "fp": 0,
+        "mcc": null,
+        "n": 480,
+        "precision": null,
+        "recall": 0.0,
+        "specificity": 1.0,
+        "tn": 240,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 0
+      },
+      "split:confirmatory|language:en": {
+        "attack_block_rate": 0.0,
+        "attack_block_rate_ci95": [
+          0.0,
+          0.0458181295355271
+        ],
+        "attack_pass_through_rate": 1.0,
+        "balanced_accuracy": 0.5,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.0458181295355271
+        ],
+        "f1": null,
+        "false_negative_rate": 1.0,
+        "false_positive_rate": 0.0,
+        "fn": 80,
+        "fp": 0,
+        "mcc": null,
+        "n": 160,
+        "precision": null,
+        "recall": 0.0,
+        "specificity": 1.0,
+        "tn": 80,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 0
+      },
+      "split:confirmatory|language:mixed": {
+        "attack_block_rate": 0.0,
+        "attack_block_rate_ci95": [
+          0.0,
+          0.0458181295355271
+        ],
+        "attack_pass_through_rate": 1.0,
+        "balanced_accuracy": 0.5,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.0458181295355271
+        ],
+        "f1": null,
+        "false_negative_rate": 1.0,
+        "false_positive_rate": 0.0,
+        "fn": 80,
+        "fp": 0,
+        "mcc": null,
+        "n": 160,
+        "precision": null,
+        "recall": 0.0,
+        "specificity": 1.0,
+        "tn": 80,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 0
+      },
+      "split:confirmatory|language:zh-TW": {
+        "attack_block_rate": 0.0,
+        "attack_block_rate_ci95": [
+          0.0,
+          0.0458181295355271
+        ],
+        "attack_pass_through_rate": 1.0,
+        "balanced_accuracy": 0.5,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.0458181295355271
+        ],
+        "f1": null,
+        "false_negative_rate": 1.0,
+        "false_positive_rate": 0.0,
+        "fn": 80,
+        "fp": 0,
+        "mcc": null,
+        "n": 160,
+        "precision": null,
+        "recall": 0.0,
+        "specificity": 1.0,
+        "tn": 80,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 0
+      },
+      "split:development": {
+        "attack_block_rate": 0.0,
+        "attack_block_rate_ci95": [
+          0.0,
+          0.11351339317396876
+        ],
+        "attack_pass_through_rate": 1.0,
+        "balanced_accuracy": 0.5,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.11351339317396876
+        ],
+        "f1": null,
+        "false_negative_rate": 1.0,
+        "false_positive_rate": 0.0,
+        "fn": 30,
+        "fp": 0,
+        "mcc": null,
+        "n": 60,
+        "precision": null,
+        "recall": 0.0,
+        "specificity": 1.0,
+        "tn": 30,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 0
+      },
+      "split:development|language:en": {
+        "attack_block_rate": 0.0,
+        "attack_block_rate_ci95": [
+          0.0,
+          0.2775327998628892
+        ],
+        "attack_pass_through_rate": 1.0,
+        "balanced_accuracy": 0.5,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.2775327998628892
+        ],
+        "f1": null,
+        "false_negative_rate": 1.0,
+        "false_positive_rate": 0.0,
+        "fn": 10,
+        "fp": 0,
+        "mcc": null,
+        "n": 20,
+        "precision": null,
+        "recall": 0.0,
+        "specificity": 1.0,
+        "tn": 10,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 0
+      },
+      "split:development|language:mixed": {
+        "attack_block_rate": 0.0,
+        "attack_block_rate_ci95": [
+          0.0,
+          0.2775327998628892
+        ],
+        "attack_pass_through_rate": 1.0,
+        "balanced_accuracy": 0.5,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.2775327998628892
+        ],
+        "f1": null,
+        "false_negative_rate": 1.0,
+        "false_positive_rate": 0.0,
+        "fn": 10,
+        "fp": 0,
+        "mcc": null,
+        "n": 20,
+        "precision": null,
+        "recall": 0.0,
+        "specificity": 1.0,
+        "tn": 10,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 0
+      },
+      "split:development|language:zh-TW": {
+        "attack_block_rate": 0.0,
+        "attack_block_rate_ci95": [
+          0.0,
+          0.2775327998628892
+        ],
+        "attack_pass_through_rate": 1.0,
+        "balanced_accuracy": 0.5,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.2775327998628892
+        ],
+        "f1": null,
+        "false_negative_rate": 1.0,
+        "false_positive_rate": 0.0,
+        "fn": 10,
+        "fp": 0,
+        "mcc": null,
+        "n": 20,
+        "precision": null,
+        "recall": 0.0,
+        "specificity": 1.0,
+        "tn": 10,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 0
+      },
+      "split:out-of-distribution": {
+        "attack_block_rate": 0.0,
+        "attack_block_rate_ci95": [
+          0.0,
+          0.04093562556432678
+        ],
+        "attack_pass_through_rate": 1.0,
+        "balanced_accuracy": 0.5,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.04093562556432678
+        ],
+        "f1": null,
+        "false_negative_rate": 1.0,
+        "false_positive_rate": 0.0,
+        "fn": 90,
+        "fp": 0,
+        "mcc": null,
+        "n": 180,
+        "precision": null,
+        "recall": 0.0,
+        "specificity": 1.0,
+        "tn": 90,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 0
+      },
+      "split:out-of-distribution|language:en": {
+        "attack_block_rate": 0.0,
+        "attack_block_rate_ci95": [
+          0.0,
+          0.11351339317396876
+        ],
+        "attack_pass_through_rate": 1.0,
+        "balanced_accuracy": 0.5,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.11351339317396876
+        ],
+        "f1": null,
+        "false_negative_rate": 1.0,
+        "false_positive_rate": 0.0,
+        "fn": 30,
+        "fp": 0,
+        "mcc": null,
+        "n": 60,
+        "precision": null,
+        "recall": 0.0,
+        "specificity": 1.0,
+        "tn": 30,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 0
+      },
+      "split:out-of-distribution|language:mixed": {
+        "attack_block_rate": 0.0,
+        "attack_block_rate_ci95": [
+          0.0,
+          0.11351339317396876
+        ],
+        "attack_pass_through_rate": 1.0,
+        "balanced_accuracy": 0.5,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.11351339317396876
+        ],
+        "f1": null,
+        "false_negative_rate": 1.0,
+        "false_positive_rate": 0.0,
+        "fn": 30,
+        "fp": 0,
+        "mcc": null,
+        "n": 60,
+        "precision": null,
+        "recall": 0.0,
+        "specificity": 1.0,
+        "tn": 30,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 0
+      },
+      "split:out-of-distribution|language:zh-TW": {
+        "attack_block_rate": 0.0,
+        "attack_block_rate_ci95": [
+          0.0,
+          0.11351339317396876
+        ],
+        "attack_pass_through_rate": 1.0,
+        "balanced_accuracy": 0.5,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.11351339317396876
+        ],
+        "f1": null,
+        "false_negative_rate": 1.0,
+        "false_positive_rate": 0.0,
+        "fn": 30,
+        "fp": 0,
+        "mcc": null,
+        "n": 60,
+        "precision": null,
+        "recall": 0.0,
+        "specificity": 1.0,
+        "tn": 30,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 0
+      },
+      "split:pilot": {
+        "attack_block_rate": 0.0,
+        "attack_block_rate_ci95": [
+          0.0,
+          0.11351339317396876
+        ],
+        "attack_pass_through_rate": 1.0,
+        "balanced_accuracy": 0.5,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.11351339317396876
+        ],
+        "f1": null,
+        "false_negative_rate": 1.0,
+        "false_positive_rate": 0.0,
+        "fn": 30,
+        "fp": 0,
+        "mcc": null,
+        "n": 60,
+        "precision": null,
+        "recall": 0.0,
+        "specificity": 1.0,
+        "tn": 30,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 0
+      },
+      "split:pilot|language:en": {
+        "attack_block_rate": 0.0,
+        "attack_block_rate_ci95": [
+          0.0,
+          0.2775327998628892
+        ],
+        "attack_pass_through_rate": 1.0,
+        "balanced_accuracy": 0.5,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.2775327998628892
+        ],
+        "f1": null,
+        "false_negative_rate": 1.0,
+        "false_positive_rate": 0.0,
+        "fn": 10,
+        "fp": 0,
+        "mcc": null,
+        "n": 20,
+        "precision": null,
+        "recall": 0.0,
+        "specificity": 1.0,
+        "tn": 10,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 0
+      },
+      "split:pilot|language:mixed": {
+        "attack_block_rate": 0.0,
+        "attack_block_rate_ci95": [
+          0.0,
+          0.2775327998628892
+        ],
+        "attack_pass_through_rate": 1.0,
+        "balanced_accuracy": 0.5,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.2775327998628892
+        ],
+        "f1": null,
+        "false_negative_rate": 1.0,
+        "false_positive_rate": 0.0,
+        "fn": 10,
+        "fp": 0,
+        "mcc": null,
+        "n": 20,
+        "precision": null,
+        "recall": 0.0,
+        "specificity": 1.0,
+        "tn": 10,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 0
+      },
+      "split:pilot|language:zh-TW": {
+        "attack_block_rate": 0.0,
+        "attack_block_rate_ci95": [
+          0.0,
+          0.2775327998628892
+        ],
+        "attack_pass_through_rate": 1.0,
+        "balanced_accuracy": 0.5,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.2775327998628892
+        ],
+        "f1": null,
+        "false_negative_rate": 1.0,
+        "false_positive_rate": 0.0,
+        "fn": 10,
+        "fp": 0,
+        "mcc": null,
+        "n": 20,
+        "precision": null,
+        "recall": 0.0,
+        "specificity": 1.0,
+        "tn": 10,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 0
+      }
+    },
+    "trufflehog": {
+      "language:en": {
+        "attack_block_rate": 0.5846153846153846,
+        "attack_block_rate_ci95": [
+          0.4986655842030211,
+          0.6657079977486905
+        ],
+        "attack_pass_through_rate": 0.4153846153846154,
+        "balanced_accuracy": 0.7923076923076924,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.028701561194431423
+        ],
+        "f1": 0.7378640776699029,
+        "false_negative_rate": 0.4153846153846154,
+        "false_positive_rate": 0.0,
+        "fn": 54,
+        "fp": 0,
+        "mcc": 0.6426845869171515,
+        "n": 260,
+        "precision": 1.0,
+        "recall": 0.5846153846153846,
+        "specificity": 1.0,
+        "tn": 130,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 76
+      },
+      "language:mixed": {
+        "attack_block_rate": 0.5923076923076923,
+        "attack_block_rate_ci95": [
+          0.5063645493259251,
+          0.6729520855304875
+        ],
+        "attack_pass_through_rate": 0.4076923076923077,
+        "balanced_accuracy": 0.7961538461538462,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.028701561194431423
+        ],
+        "f1": 0.7439613526570048,
+        "false_negative_rate": 0.4076923076923077,
+        "false_positive_rate": 0.0,
+        "fn": 53,
+        "fp": 0,
+        "mcc": 0.648664032702912,
+        "n": 260,
+        "precision": 1.0,
+        "recall": 0.5923076923076923,
+        "specificity": 1.0,
+        "tn": 130,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 77
+      },
+      "language:zh-TW": {
+        "attack_block_rate": 0.5923076923076923,
+        "attack_block_rate_ci95": [
+          0.5063645493259251,
+          0.6729520855304875
+        ],
+        "attack_pass_through_rate": 0.4076923076923077,
+        "balanced_accuracy": 0.7961538461538462,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.028701561194431423
+        ],
+        "f1": 0.7439613526570048,
+        "false_negative_rate": 0.4076923076923077,
+        "false_positive_rate": 0.0,
+        "fn": 53,
+        "fp": 0,
+        "mcc": 0.648664032702912,
+        "n": 260,
+        "precision": 1.0,
+        "recall": 0.5923076923076923,
+        "specificity": 1.0,
+        "tn": 130,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 77
+      },
+      "overall": {
+        "attack_block_rate": 0.5897435897435898,
+        "attack_block_rate_ci95": [
+          0.5402815728621383,
+          0.6374549209280423
+        ],
+        "attack_pass_through_rate": 0.41025641025641024,
+        "balanced_accuracy": 0.7948717948717949,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.009753820311850517
+        ],
+        "f1": 0.7419354838709677,
+        "false_negative_rate": 0.41025641025641024,
+        "false_positive_rate": 0.0,
+        "fn": 160,
+        "fp": 0,
+        "mcc": 0.6466697906828633,
+        "n": 780,
+        "precision": 1.0,
+        "recall": 0.5897435897435898,
+        "specificity": 1.0,
+        "tn": 390,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 230
+      },
+      "split:confirmatory": {
+        "attack_block_rate": 0.6583333333333333,
+        "attack_block_rate_ci95": [
+          0.5962591015682509,
+          0.7154188237835889
+        ],
+        "attack_pass_through_rate": 0.3416666666666667,
+        "balanced_accuracy": 0.8291666666666666,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.015753919941558815
+        ],
+        "f1": 0.7939698492462312,
+        "false_negative_rate": 0.3416666666666667,
+        "false_positive_rate": 0.0,
+        "fn": 82,
+        "fp": 0,
+        "mcc": 0.7004878512962696,
+        "n": 480,
+        "precision": 1.0,
+        "recall": 0.6583333333333333,
+        "specificity": 1.0,
+        "tn": 240,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 158
+      },
+      "split:confirmatory|language:en": {
+        "attack_block_rate": 0.65,
+        "attack_block_rate_ci95": [
+          0.5408000664880767,
+          0.7454544946512652
+        ],
+        "attack_pass_through_rate": 0.35,
+        "balanced_accuracy": 0.825,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.0458181295355271
+        ],
+        "f1": 0.787878787878788,
+        "false_negative_rate": 0.35,
+        "false_positive_rate": 0.0,
+        "fn": 28,
+        "fp": 0,
+        "mcc": 0.693888666488711,
+        "n": 160,
+        "precision": 1.0,
+        "recall": 0.65,
+        "specificity": 1.0,
+        "tn": 80,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 52
+      },
+      "split:confirmatory|language:mixed": {
+        "attack_block_rate": 0.6625,
+        "attack_block_rate_ci95": [
+          0.5535652339817697,
+          0.756543873919184
+        ],
+        "attack_pass_through_rate": 0.3375,
+        "balanced_accuracy": 0.83125,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.0458181295355271
+        ],
+        "f1": 0.7969924812030075,
+        "false_negative_rate": 0.3375,
+        "false_positive_rate": 0.0,
+        "fn": 27,
+        "fp": 0,
+        "mcc": 0.7037947874229663,
+        "n": 160,
+        "precision": 1.0,
+        "recall": 0.6625,
+        "specificity": 1.0,
+        "tn": 80,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 53
+      },
+      "split:confirmatory|language:zh-TW": {
+        "attack_block_rate": 0.6625,
+        "attack_block_rate_ci95": [
+          0.5535652339817697,
+          0.756543873919184
+        ],
+        "attack_pass_through_rate": 0.3375,
+        "balanced_accuracy": 0.83125,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.0458181295355271
+        ],
+        "f1": 0.7969924812030075,
+        "false_negative_rate": 0.3375,
+        "false_positive_rate": 0.0,
+        "fn": 27,
+        "fp": 0,
+        "mcc": 0.7037947874229663,
+        "n": 160,
+        "precision": 1.0,
+        "recall": 0.6625,
+        "specificity": 1.0,
+        "tn": 80,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 53
+      },
+      "split:development": {
+        "attack_block_rate": 0.7,
+        "attack_block_rate_ci95": [
+          0.5212421254128504,
+          0.8333525173175619
+        ],
+        "attack_pass_through_rate": 0.3,
+        "balanced_accuracy": 0.85,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.11351339317396876
+        ],
+        "f1": 0.8235294117647058,
+        "false_negative_rate": 0.3,
+        "false_positive_rate": 0.0,
+        "fn": 9,
+        "fp": 0,
+        "mcc": 0.7337993857053428,
+        "n": 60,
+        "precision": 1.0,
+        "recall": 0.7,
+        "specificity": 1.0,
+        "tn": 30,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 21
+      },
+      "split:development|language:en": {
+        "attack_block_rate": 0.7,
+        "attack_block_rate_ci95": [
+          0.39677814746114537,
+          0.8922087325936989
+        ],
+        "attack_pass_through_rate": 0.3,
+        "balanced_accuracy": 0.85,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.2775327998628892
+        ],
+        "f1": 0.8235294117647058,
+        "false_negative_rate": 0.3,
+        "false_positive_rate": 0.0,
+        "fn": 3,
+        "fp": 0,
+        "mcc": 0.7337993857053428,
+        "n": 20,
+        "precision": 1.0,
+        "recall": 0.7,
+        "specificity": 1.0,
+        "tn": 10,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 7
+      },
+      "split:development|language:mixed": {
+        "attack_block_rate": 0.7,
+        "attack_block_rate_ci95": [
+          0.39677814746114537,
+          0.8922087325936989
+        ],
+        "attack_pass_through_rate": 0.3,
+        "balanced_accuracy": 0.85,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.2775327998628892
+        ],
+        "f1": 0.8235294117647058,
+        "false_negative_rate": 0.3,
+        "false_positive_rate": 0.0,
+        "fn": 3,
+        "fp": 0,
+        "mcc": 0.7337993857053428,
+        "n": 20,
+        "precision": 1.0,
+        "recall": 0.7,
+        "specificity": 1.0,
+        "tn": 10,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 7
+      },
+      "split:development|language:zh-TW": {
+        "attack_block_rate": 0.7,
+        "attack_block_rate_ci95": [
+          0.39677814746114537,
+          0.8922087325936989
+        ],
+        "attack_pass_through_rate": 0.3,
+        "balanced_accuracy": 0.85,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.2775327998628892
+        ],
+        "f1": 0.8235294117647058,
+        "false_negative_rate": 0.3,
+        "false_positive_rate": 0.0,
+        "fn": 3,
+        "fp": 0,
+        "mcc": 0.7337993857053428,
+        "n": 20,
+        "precision": 1.0,
+        "recall": 0.7,
+        "specificity": 1.0,
+        "tn": 10,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 7
+      },
+      "split:out-of-distribution": {
+        "attack_block_rate": 0.3333333333333333,
+        "attack_block_rate_ci95": [
+          0.24453505279444637,
+          0.4357768223936625
+        ],
+        "attack_pass_through_rate": 0.6666666666666666,
+        "balanced_accuracy": 0.6666666666666666,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.04093562556432678
+        ],
+        "f1": 0.5,
+        "false_negative_rate": 0.6666666666666666,
+        "false_positive_rate": 0.0,
+        "fn": 60,
+        "fp": 0,
+        "mcc": 0.4472135954999579,
+        "n": 180,
+        "precision": 1.0,
+        "recall": 0.3333333333333333,
+        "specificity": 1.0,
+        "tn": 90,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 30
+      },
+      "split:out-of-distribution|language:en": {
+        "attack_block_rate": 0.3333333333333333,
+        "attack_block_rate_ci95": [
+          0.19230498083676134,
+          0.5121994835545616
+        ],
+        "attack_pass_through_rate": 0.6666666666666666,
+        "balanced_accuracy": 0.6666666666666666,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.11351339317396876
+        ],
+        "f1": 0.5,
+        "false_negative_rate": 0.6666666666666666,
+        "false_positive_rate": 0.0,
+        "fn": 20,
+        "fp": 0,
+        "mcc": 0.4472135954999579,
+        "n": 60,
+        "precision": 1.0,
+        "recall": 0.3333333333333333,
+        "specificity": 1.0,
+        "tn": 30,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 10
+      },
+      "split:out-of-distribution|language:mixed": {
+        "attack_block_rate": 0.3333333333333333,
+        "attack_block_rate_ci95": [
+          0.19230498083676134,
+          0.5121994835545616
+        ],
+        "attack_pass_through_rate": 0.6666666666666666,
+        "balanced_accuracy": 0.6666666666666666,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.11351339317396876
+        ],
+        "f1": 0.5,
+        "false_negative_rate": 0.6666666666666666,
+        "false_positive_rate": 0.0,
+        "fn": 20,
+        "fp": 0,
+        "mcc": 0.4472135954999579,
+        "n": 60,
+        "precision": 1.0,
+        "recall": 0.3333333333333333,
+        "specificity": 1.0,
+        "tn": 30,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 10
+      },
+      "split:out-of-distribution|language:zh-TW": {
+        "attack_block_rate": 0.3333333333333333,
+        "attack_block_rate_ci95": [
+          0.19230498083676134,
+          0.5121994835545616
+        ],
+        "attack_pass_through_rate": 0.6666666666666666,
+        "balanced_accuracy": 0.6666666666666666,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.11351339317396876
+        ],
+        "f1": 0.5,
+        "false_negative_rate": 0.6666666666666666,
+        "false_positive_rate": 0.0,
+        "fn": 20,
+        "fp": 0,
+        "mcc": 0.4472135954999579,
+        "n": 60,
+        "precision": 1.0,
+        "recall": 0.3333333333333333,
+        "specificity": 1.0,
+        "tn": 30,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 10
+      },
+      "split:pilot": {
+        "attack_block_rate": 0.7,
+        "attack_block_rate_ci95": [
+          0.5212421254128504,
+          0.8333525173175619
+        ],
+        "attack_pass_through_rate": 0.3,
+        "balanced_accuracy": 0.85,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.11351339317396876
+        ],
+        "f1": 0.8235294117647058,
+        "false_negative_rate": 0.3,
+        "false_positive_rate": 0.0,
+        "fn": 9,
+        "fp": 0,
+        "mcc": 0.7337993857053428,
+        "n": 60,
+        "precision": 1.0,
+        "recall": 0.7,
+        "specificity": 1.0,
+        "tn": 30,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 21
+      },
+      "split:pilot|language:en": {
+        "attack_block_rate": 0.7,
+        "attack_block_rate_ci95": [
+          0.39677814746114537,
+          0.8922087325936989
+        ],
+        "attack_pass_through_rate": 0.3,
+        "balanced_accuracy": 0.85,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.2775327998628892
+        ],
+        "f1": 0.8235294117647058,
+        "false_negative_rate": 0.3,
+        "false_positive_rate": 0.0,
+        "fn": 3,
+        "fp": 0,
+        "mcc": 0.7337993857053428,
+        "n": 20,
+        "precision": 1.0,
+        "recall": 0.7,
+        "specificity": 1.0,
+        "tn": 10,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 7
+      },
+      "split:pilot|language:mixed": {
+        "attack_block_rate": 0.7,
+        "attack_block_rate_ci95": [
+          0.39677814746114537,
+          0.8922087325936989
+        ],
+        "attack_pass_through_rate": 0.3,
+        "balanced_accuracy": 0.85,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.2775327998628892
+        ],
+        "f1": 0.8235294117647058,
+        "false_negative_rate": 0.3,
+        "false_positive_rate": 0.0,
+        "fn": 3,
+        "fp": 0,
+        "mcc": 0.7337993857053428,
+        "n": 20,
+        "precision": 1.0,
+        "recall": 0.7,
+        "specificity": 1.0,
+        "tn": 10,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 7
+      },
+      "split:pilot|language:zh-TW": {
+        "attack_block_rate": 0.7,
+        "attack_block_rate_ci95": [
+          0.39677814746114537,
+          0.8922087325936989
+        ],
+        "attack_pass_through_rate": 0.3,
+        "balanced_accuracy": 0.85,
+        "benign_block_rate": 0.0,
+        "benign_block_rate_ci95": [
+          0.0,
+          0.2775327998628892
+        ],
+        "f1": 0.8235294117647058,
+        "false_negative_rate": 0.3,
+        "false_positive_rate": 0.0,
+        "fn": 3,
+        "fp": 0,
+        "mcc": 0.7337993857053428,
+        "n": 20,
+        "precision": 1.0,
+        "recall": 0.7,
+        "specificity": 1.0,
+        "tn": 10,
+        "tool_error_count": 0,
+        "tool_error_rate": 0.0,
+        "tp": 7
+      }
+    }
+  },
+  "primary_analysis": {
+    "gitleaks": {
+      "bootstrap": {
+        "attack_pass_through_rate_reduction": 0.17916666666666667,
+        "ci95": [
+          0.125,
+          0.23333333333333334
+        ],
+        "iterations": 10000,
+        "n_unsafe": 240,
+        "seed": 20260731
+      },
+      "classification": "PRIMARY_CONFIRMATORY",
+      "mcnemar": {
+        "baseline_only_blocks": 3,
+        "discordant": 49,
+        "exact_p_value": 6.981082378842984e-11,
+        "tool_only_blocks": 46
+      }
+    }
+  },
+  "primary_comparison": "gitleaks versus keyword-regex-baseline",
+  "primary_endpoint": "paired reduction in attack pass-through rate versus keyword-regex-baseline on confirmatory unsafe cases",
+  "schema_version": "1.1",
+  "secondary_analysis": {
+    "detect-secrets": {
+      "bootstrap": {
+        "attack_pass_through_rate_reduction": -0.3416666666666667,
+        "ci95": [
+          -0.44583333333333336,
+          -0.23333333333333334
+        ],
+        "iterations": 10000,
+        "n_unsafe": 240,
+        "seed": 20260731
+      },
+      "classification": "SECONDARY_CONFIRMATORY",
+      "mcnemar": {
+        "baseline_only_blocks": 141,
+        "discordant": 200,
+        "exact_p_value": 6.307981725354924e-09,
+        "holm_adjusted_p_value": 1.2615963450709848e-08,
+        "tool_only_blocks": 59
+      }
+    },
+    "trufflehog": {
+      "bootstrap": {
+        "attack_pass_through_rate_reduction": -0.09166666666666667,
+        "ci95": [
+          -0.12916666666666668,
+          -0.05416666666666667
+        ],
+        "iterations": 10000,
+        "n_unsafe": 240,
+        "seed": 20260731
+      },
+      "classification": "SECONDARY_CONFIRMATORY",
+      "mcnemar": {
+        "baseline_only_blocks": 22,
+        "discordant": 22,
+        "exact_p_value": 4.76837158203125e-07,
+        "holm_adjusted_p_value": 4.76837158203125e-07,
+        "tool_only_blocks": 0
+      }
+    }
+  },
+  "threshold_evaluation": {
+    "detect-secrets": {
+      "all_deployment_thresholds_met": false,
+      "attack_block_rate_improvement": -0.3416666666666667,
+      "checks": {
+        "attack_block_improvement_at_least_0_10": false,
+        "benign_block_ci_upper_at_most_0_10": false,
+        "benign_block_rate_at_most_0_05": false,
+        "comparison_ci_lower_above_zero": false,
+        "ood_degradation_at_most_0_15": true,
+        "zh_tw_degradation_at_most_0_15": true
+      },
+      "classification": "SECONDARY_CONFIRMATORY"
+    },
+    "gitleaks": {
+      "all_deployment_thresholds_met": true,
+      "attack_block_rate_improvement": 0.1791666666666667,
+      "checks": {
+        "attack_block_improvement_at_least_0_10": true,
+        "benign_block_ci_upper_at_most_0_10": true,
+        "benign_block_rate_at_most_0_05": true,
+        "comparison_ci_lower_above_zero": true,
+        "ood_degradation_at_most_0_15": true,
+        "zh_tw_degradation_at_most_0_15": true
+      },
+      "classification": "PRIMARY_CONFIRMATORY"
+    },
+    "trufflehog": {
+      "all_deployment_thresholds_met": false,
+      "attack_block_rate_improvement": -0.09166666666666667,
+      "checks": {
+        "attack_block_improvement_at_least_0_10": false,
+        "benign_block_ci_upper_at_most_0_10": true,
+        "benign_block_rate_at_most_0_05": true,
+        "comparison_ci_lower_above_zero": false,
+        "ood_degradation_at_most_0_15": false,
+        "zh_tw_degradation_at_most_0_15": true
+      },
+      "classification": "SECONDARY_CONFIRMATORY"
+    }
+  }
+}
