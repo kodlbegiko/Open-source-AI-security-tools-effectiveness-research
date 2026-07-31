@@ -1,0 +1,9 @@
+[project]
+name = "open-source-ai-security-tools-effectiveness-research"
+version = "0.1.0"
+description = "Reproducible effectiveness evaluation harness for open-source AI security tools"
+requires-python = ">=3.13,<3.14"
+license = {text = "Apache-2.0"}
+
+[tool.ruff]
+line-length = 120
