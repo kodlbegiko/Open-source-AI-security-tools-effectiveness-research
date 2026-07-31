@@ -1,0 +1,180 @@
+name: Release status probe
+
+on:
+  push:
+    branches: [research/effectiveness-study]
+    paths:
+      - '.github/workflows/release-status-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      MERGE_SHA: 21fc314d170762392ec2ae1ea3595c4d6da9b037
+      TAG: research-v0.1.0
+    steps:
+      - name: Checkout research branch
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: research/effectiveness-study
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Wait for release workflow and collect evidence
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/diagnostics
+          for attempt in $(seq 1 180); do
+            gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/research-release.yml/runs?branch=main&per_page=20" > /tmp/release-runs.json
+            python - <<'PY' > /tmp/selection.json
+          import json, os
+          runs = json.load(open('/tmp/release-runs.json')).get('workflow_runs', [])
+          matching = [r for r in runs if r.get('head_sha') == os.environ['MERGE_SHA']]
+          selection = max(matching, key=lambda r: r['id']) if matching else None
+          print(json.dumps({'found': selection is not None, 'selection': selection}, indent=2, sort_keys=True))
+          PY
+            found=$(python -c "import json; print(str(json.load(open('/tmp/selection.json'))['found']).lower())")
+            if [[ "$found" == true ]]; then
+              status=$(python -c "import json; print(json.load(open('/tmp/selection.json'))['selection']['status'])")
+              if [[ "$status" == completed ]]; then
+                break
+              fi
+            fi
+            sleep 5
+          done
+
+          python - <<'PY'
+          import json
+          selection = json.load(open('/tmp/selection.json'))
+          assert selection['found'], selection
+          assert selection['selection']['status'] == 'completed', selection
+          PY
+
+          run_id=$(python -c "import json; print(json.load(open('/tmp/selection.json'))['selection']['id'])")
+          gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}/jobs?per_page=100" > /tmp/jobs.json
+
+          set +e
+          gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${TAG}" > /tmp/tag-ref.json
+          tag_ref_status=$?
+          gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${TAG}" > /tmp/release.json
+          release_status=$?
+          set -e
+
+          TAG_REF_STATUS="$tag_ref_status" RELEASE_STATUS="$release_status" python - <<'PY'
+          import json, os
+          from pathlib import Path
+
+          selection = json.load(open('/tmp/selection.json'))['selection']
+          jobs = json.load(open('/tmp/jobs.json')).get('jobs', [])
+          payload = {
+              'merge_sha': os.environ['MERGE_SHA'],
+              'workflow_run': {
+                  'id': selection['id'],
+                  'name': selection['name'],
+                  'event': selection['event'],
+                  'head_sha': selection['head_sha'],
+                  'status': selection['status'],
+                  'conclusion': selection.get('conclusion'),
+                  'url': selection['html_url'],
+                  'created_at': selection.get('created_at'),
+                  'updated_at': selection.get('updated_at'),
+              },
+              'jobs': [
+                  {
+                      'id': job['id'],
+                      'name': job['name'],
+                      'status': job['status'],
+                      'conclusion': job.get('conclusion'),
+                      'steps': [
+                          {'number': step['number'], 'name': step['name'], 'status': step['status'], 'conclusion': step.get('conclusion')}
+                          for step in job.get('steps', [])
+                      ],
+                  }
+                  for job in jobs
+              ],
+              'tag_ref_available': os.environ['TAG_REF_STATUS'] == '0',
+              'release_available': os.environ['RELEASE_STATUS'] == '0',
+          }
+          if payload['tag_ref_available']:
+              tag_ref = json.load(open('/tmp/tag-ref.json'))
+              payload['tag_ref'] = tag_ref
+          if payload['release_available']:
+              release = json.load(open('/tmp/release.json'))
+              payload['release'] = {
+                  'id': release['id'],
+                  'tag_name': release['tag_name'],
+                  'target_commitish': release['target_commitish'],
+                  'name': release['name'],
+                  'draft': release['draft'],
+                  'prerelease': release['prerelease'],
+                  'published_at': release['published_at'],
+                  'html_url': release['html_url'],
+                  'assets': [
+                      {
+                          'id': asset['id'],
+                          'name': asset['name'],
+                          'size': asset['size'],
+                          'digest': asset.get('digest'),
+                          'download_count': asset['download_count'],
+                          'browser_download_url': asset['browser_download_url'],
+                      }
+                      for asset in release.get('assets', [])
+                  ],
+              }
+          Path('evidence/diagnostics/release-status.json').write_text(json.dumps(payload, indent=2, sort_keys=True) + '\n')
+          print(json.dumps(payload, indent=2, sort_keys=True))
+          PY
+
+      - name: Resolve annotated tag target
+        if: always()
+        run: |
+          set -euo pipefail
+          if [[ ! -s evidence/diagnostics/release-status.json ]]; then exit 0; fi
+          python - <<'PY' > /tmp/tag-object-sha
+          import json
+          from pathlib import Path
+          payload = json.loads(Path('evidence/diagnostics/release-status.json').read_text())
+          if not payload.get('tag_ref_available'):
+              print('')
+          else:
+              print(payload['tag_ref']['object']['sha'])
+          PY
+          tag_object=$(cat /tmp/tag-object-sha)
+          if [[ -n "$tag_object" ]]; then
+            gh api "repos/${GITHUB_REPOSITORY}/git/tags/${tag_object}" > /tmp/tag-object.json
+            python - <<'PY'
+            import json
+            from pathlib import Path
+            payload = json.loads(Path('evidence/diagnostics/release-status.json').read_text())
+            tag = json.load(open('/tmp/tag-object.json'))
+            payload['annotated_tag'] = {
+                'sha': tag['sha'],
+                'tag': tag['tag'],
+                'message': tag['message'],
+                'target_type': tag['object']['type'],
+                'target_sha': tag['object']['sha'],
+                'tagger_date': tag['tagger']['date'],
+            }
+            Path('evidence/diagnostics/release-status.json').write_text(json.dumps(payload, indent=2, sort_keys=True) + '\n')
+            print(json.dumps(payload['annotated_tag'], indent=2, sort_keys=True))
+            PY
+          fi
+
+      - name: Commit release status evidence
+        if: always()
+        run: |
+          set -euo pipefail
+          test -s evidence/diagnostics/release-status.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add evidence/diagnostics/release-status.json
+          git diff --cached --check
+          git commit -m 'chore: record post-merge release status evidence'
+          git push origin HEAD:research/effectiveness-study
