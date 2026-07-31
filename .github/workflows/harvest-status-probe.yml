@@ -24,6 +24,7 @@ jobs:
           import json
           wanted = {
               'Patch reporting newline and dispatch harvest',
+              'Patch reporting CSV and dispatch harvest',
               'Harvest authoritative formal evidence',
               'Harvest formal evaluation results',
               'Harvest status probe',
