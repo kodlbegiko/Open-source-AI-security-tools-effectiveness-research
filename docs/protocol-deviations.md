@@ -1,6 +1,28 @@
 # Protocol Deviations
 
-No post-freeze protocol deviation has occurred. This file is initialized before freeze.
+## PD-001 — Prespecified secondary reporting implemented after freeze
+
+- Stage: post-freeze, before formal outcomes were inspected.
+- Affected primary endpoint: no.
+- Reason: the frozen protocol prespecified transformation, credential-family and fail-closed sensitivity tables, but the frozen primary metrics program did not emit those reporting tables.
+- Corrective action: add a reporting-only program that derives the prespecified secondary tables from the frozen manifest and normalized outputs.
+- Classification: `PRESPECIFIED_SECONDARY_ANALYSIS_IMPLEMENTED_POST_FREEZE`.
+- Primary validity: unchanged. These tables cannot support or overturn the primary verdict.
+- Machine-readable record: `evidence/protocol-deviation-001.json`.
+
+## PD-002 — Evidence finalization and workflow ordering repair
+
+- Date: 2026-07-31.
+- Stage: post-freeze and after intermediate formal outcomes were visible in failed workflow logs.
+- Affected files: `scripts/run_evaluation.sh`, the harvest workflow, reproducibility workflow and evidence-consistency workflow.
+- Failed runs: Formal Evaluation `30607078461`; Reproducibility `30607078487`; Evidence Consistency `30607078497`.
+- Root cause: `command-log.txt` remained open through process-substitution `tee` after `SHA256SUMS` was generated, so its digest changed before verification. The QC workflows also ran before the formal artifact had been harvested into the repository.
+- Corrective action: execute all logged work through a finite pipeline, close `tee`, then generate and verify checksums. Harvest the first successful post-repair formal run whose head commit is an ancestor of the research branch. Run repository-level reproducibility and evidence consistency only after harvested results exist.
+- Formal outcomes inspected: yes, from the failed run log.
+- Expected bias direction: none. The benchmark, scanner versions, adapter mapping, labels, thresholds, primary comparison, fail-open policy, bootstrap seed and statistical tests are unchanged.
+- Rerun rule: the first successful formal evaluation after this repair is authoritative; a later run may verify reproducibility but cannot replace it based on observed values.
+- Primary validity: unchanged only if the rerun matches the frozen deterministic pipeline and raw-to-metric recomputation passes.
+- Machine-readable record: `evidence/protocol-deviation-002.json`.
 
 ## Pre-freeze engineering history
 
