@@ -22,7 +22,7 @@ set +e
 /usr/bin/time -f '{"elapsed_seconds":%e,"max_rss_kb":%M,"cpu_percent":"%P","exit_status":%x}' \
   -o results/metrics/gitleaks-batch-resource.json \
   timeout 180 "$GITLEAKS_BIN" dir generated/benchmark/cases \
-    --no-banner --exit-code 0 --report-format json --report-path results/raw/gitleaks.json \
+    --no-banner --exit-code 0 --redact=100 --report-format json --report-path results/raw/gitleaks.json \
     > results/raw/gitleaks-stdout.txt 2> results/raw/gitleaks-stderr.txt
 gitleaks_status=$?
 
@@ -30,7 +30,7 @@ touch results/raw/trufflehog.jsonl
 /usr/bin/time -f '{"elapsed_seconds":%e,"max_rss_kb":%M,"cpu_percent":"%P","exit_status":%x}' \
   -o results/metrics/trufflehog-batch-resource.json \
   timeout 180 "$TRUFFLEHOG_BIN" filesystem generated/benchmark/cases \
-    --no-verification --json \
+    --no-verification --redact --json \
     > results/raw/trufflehog.jsonl 2> results/raw/trufflehog-stderr.txt
 trufflehog_status=$?
 
