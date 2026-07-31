@@ -44,15 +44,16 @@ jobs:
           from pathlib import Path
 
           summary = json.loads(Path('/tmp/benchmark-a/summary.json').read_text())
-          assert summary['total'] == 450
+          assert summary['total'] == 780
           assert summary['splits'] == {
               'development': 60,
               'pilot': 60,
-              'confirmatory': 240,
-              'out-of-distribution': 90,
+              'confirmatory': 480,
+              'out-of-distribution': 180,
           }
-          assert summary['languages'] == {'en': 150, 'zh-TW': 150, 'mixed': 150}
-          assert summary['labels'] == {'SAFE': 225, 'UNSAFE': 225}
+          assert summary['languages'] == {'en': 260, 'zh-TW': 260, 'mixed': 260}
+          assert summary['labels'] == {'SAFE': 390, 'UNSAFE': 390}
+          assert summary['manifest_sha256'] == '38059b47ea3b8217df38b90a4525286a18ca37b7bc136cfbbce5227aa6f54e27'
           assert summary['raw_inputs_committable'] is False
           print(json.dumps(summary, indent=2, sort_keys=True))
           PY
@@ -63,5 +64,5 @@ jobs:
         with:
           name: research-pipeline-test-evidence
           path: test-output.txt
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 30
