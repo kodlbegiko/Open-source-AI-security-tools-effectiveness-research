@@ -3,6 +3,17 @@ name: Reproducibility check
 on:
   pull_request:
     branches: [main]
+    paths:
+      - '.github/workflows/reproducibility-check.yml'
+      - 'benchmark/**'
+      - 'baselines/**'
+      - 'analysis/**'
+      - 'reporting/secondary_subgroup_analysis.py'
+      - 'generated/benchmark/summary.json'
+      - 'generated/benchmark/manifest.jsonl'
+      - 'results/normalized/**'
+      - 'results/metrics/**'
+      - 'evidence/formal-run/**'
   workflow_dispatch:
 
 permissions:
@@ -11,7 +22,7 @@ permissions:
 jobs:
   reproduce:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -21,16 +32,55 @@ jobs:
         with:
           python-version: '3.13.14'
 
-      - name: Regenerate benchmark manifest
+      - name: Detect harvested evidence phase
+        id: phase
         run: |
           set -euo pipefail
+          required=(
+            generated/benchmark/summary.json
+            generated/benchmark/manifest.jsonl
+            results/normalized/no-security-tool.jsonl
+            results/normalized/keyword-regex-baseline.jsonl
+            results/normalized/gitleaks.jsonl
+            results/normalized/trufflehog.jsonl
+            results/normalized/detect-secrets.jsonl
+            results/metrics/metrics.json
+            results/metrics/secondary-subgroups.json
+            evidence/formal-run/run.json
+          )
+          missing=0
+          for path in "${required[@]}"; do
+            if [[ ! -s "$path" ]]; then
+              echo "not yet harvested: $path"
+              missing=1
+            fi
+          done
+          if [[ "$missing" -eq 0 ]]; then
+            echo 'ready=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'ready=false' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Record pre-harvest non-applicability
+        if: steps.phase.outputs.ready != 'true'
+        run: |
+          echo 'NOT_APPLICABLE_BEFORE_AUTHORITATIVE_EVIDENCE_HARVEST'
+          echo 'A later commit containing the formal artifact-derived files must trigger the full reproduction path.'
+
+      - name: Regenerate benchmark manifest
+        if: steps.phase.outputs.ready == 'true'
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/reproduced-benchmark
           python benchmark/generate_benchmark.py --output /tmp/reproduced-benchmark
           diff -u generated/benchmark/summary.json /tmp/reproduced-benchmark/summary.json
           diff -u generated/benchmark/manifest.jsonl /tmp/reproduced-benchmark/manifest.jsonl
 
       - name: Recompute baselines
+        if: steps.phase.outputs.ready == 'true'
         run: |
           set -euo pipefail
+          rm -rf /tmp/reproduced-results
           mkdir -p /tmp/reproduced-results
           python baselines/run_baselines.py \
             --benchmark-root /tmp/reproduced-benchmark \
@@ -39,6 +89,7 @@ jobs:
           diff -u results/normalized/keyword-regex-baseline.jsonl /tmp/reproduced-results/keyword-regex-baseline.jsonl
 
       - name: Recompute frozen primary metrics
+        if: steps.phase.outputs.ready == 'true'
         run: |
           set -euo pipefail
           cp results/normalized/gitleaks.jsonl /tmp/reproduced-results/
@@ -50,11 +101,61 @@ jobs:
             --output /tmp/reproduced-metrics.json
           diff -u results/metrics/metrics.json /tmp/reproduced-metrics.json
 
+      - name: Independently spot-check primary paired result
+        if: steps.phase.outputs.ready == 'true'
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          def rows(path):
+              return [json.loads(line) for line in Path(path).read_text().splitlines() if line.strip()]
+
+          manifest = {r['case_id']: r for r in rows('generated/benchmark/manifest.jsonl')}
+          baseline = {r['case_id']: r for r in rows('results/normalized/keyword-regex-baseline.jsonl')}
+          tool = {r['case_id']: r for r in rows('results/normalized/gitleaks.jsonl')}
+          unsafe = [case_id for case_id, case in manifest.items() if case['split'] == 'confirmatory' and case['label'] == 'UNSAFE']
+          assert len(unsafe) == 240
+
+          baseline_blocks = sum(baseline[c]['decision'] == 'BLOCK' for c in unsafe)
+          tool_blocks = sum(tool[c]['decision'] == 'BLOCK' for c in unsafe)
+          baseline_only = sum(baseline[c]['decision'] == 'BLOCK' and tool[c]['decision'] != 'BLOCK' for c in unsafe)
+          tool_only = sum(tool[c]['decision'] == 'BLOCK' and baseline[c]['decision'] != 'BLOCK' for c in unsafe)
+          reduction = (tool_blocks - baseline_blocks) / len(unsafe)
+
+          metrics = json.loads(Path('results/metrics/metrics.json').read_text())
+          primary = metrics['primary_analysis']['gitleaks']
+          assert abs(reduction - primary['bootstrap']['attack_pass_through_rate_reduction']) < 1e-15
+          assert baseline_only == primary['mcnemar']['baseline_only_blocks']
+          assert tool_only == primary['mcnemar']['tool_only_blocks']
+          assert baseline_only + tool_only == primary['mcnemar']['discordant']
+          print(json.dumps({
+              'n_unsafe': len(unsafe),
+              'baseline_blocks': baseline_blocks,
+              'gitleaks_blocks': tool_blocks,
+              'pass_through_reduction': reduction,
+              'baseline_only_blocks': baseline_only,
+              'tool_only_blocks': tool_only,
+              'status': 'MATCHED_FORMAL_METRICS'
+          }, indent=2, sort_keys=True))
+          PY
+
       - name: Recompute reporting-only secondary tables
+        if: steps.phase.outputs.ready == 'true'
         run: |
           set -euo pipefail
           python reporting/secondary_subgroup_analysis.py \
-            --manifest generated/benchmark/manifest.jsonl \
+            --manifest /tmp/reproduced-benchmark/manifest.jsonl \
             --results-dir results/normalized \
             --output /tmp/reproduced-secondary.json
           diff -u results/metrics/secondary-subgroups.json /tmp/reproduced-secondary.json
+
+      - name: Confirm clean-room inputs were used
+        if: steps.phase.outputs.ready == 'true'
+        run: |
+          set -euo pipefail
+          test -d /tmp/reproduced-benchmark
+          test -d /tmp/reproduced-results
+          test ! -d generated/benchmark/cases
+          echo 'FULL_REPRODUCTION_PATH_PASSED'
