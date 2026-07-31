@@ -60,8 +60,32 @@ jobs:
           assert trufflehog, 'TruffleHog produced no finding'
           serialized = json.dumps({'gitleaks': gitleaks, 'trufflehog': trufflehog}, sort_keys=True)
           assert token not in serialized, 'exact synthetic token remains in retained output'
+
+          gitleaks_allowed = {
+              'Description', 'StartLine', 'EndLine', 'StartColumn', 'EndColumn',
+              'File', 'SymlinkFile', 'Commit', 'Entropy', 'Author', 'Email',
+              'Date', 'Message', 'Tags', 'RuleID', 'Fingerprint',
+          }
+          assert all(set(record) <= gitleaks_allowed for record in gitleaks)
           assert all('Secret' not in record and 'Match' not in record for record in gitleaks)
-          assert any(record.get('Raw') == '[REDACTED]' for record in trufflehog)
-          assert all(record.get('RawV2') == '[REDACTED]' for record in trufflehog if 'RawV2' in record)
-          print(json.dumps({'gitleaks_findings': len(gitleaks), 'trufflehog_findings': len(trufflehog), 'exact_raw_token_absent': True}))
+
+          trufflehog_allowed = {
+              'DetectorType', 'DetectorName', 'DecoderName', 'Verified', 'SourceMetadata',
+          }
+          for record in trufflehog:
+              assert set(record) <= trufflehog_allowed
+              assert not ({'Raw', 'RawV2', 'ExtraData', 'VerificationError'} & set(record))
+              source = record.get('SourceMetadata', {})
+              assert set(source) <= {'Data'}
+              data = source.get('Data', {})
+              assert set(data) <= {'Filesystem'}
+              filesystem = data.get('Filesystem', {})
+              assert set(filesystem) <= {'file'}
+
+          print(json.dumps({
+              'gitleaks_findings': len(gitleaks),
+              'trufflehog_findings': len(trufflehog),
+              'exact_raw_token_absent': True,
+              'whitelist_only': True,
+          }))
           PY
