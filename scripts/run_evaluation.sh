@@ -8,8 +8,9 @@ set -euo pipefail
 mkdir -p results/raw results/normalized results/metrics evidence/evaluation reports
 exec > >(tee -a evidence/evaluation/command-log.txt) 2>&1
 
+gitleaks_unredacted=$(mktemp)
 trufflehog_unredacted=$(mktemp)
-trap 'rm -f "$trufflehog_unredacted"' EXIT
+trap 'rm -f "$gitleaks_unredacted" "$trufflehog_unredacted"' EXIT
 
 echo "evaluation_started_utc=$(date -u +%FT%TZ)"
 echo "git_sha=${GITHUB_SHA:-LOCAL}"
@@ -25,7 +26,7 @@ set +e
 /usr/bin/time -f '{"elapsed_seconds":%e,"max_rss_kb":%M,"cpu_percent":"%P","exit_status":%x}' \
   -o results/metrics/gitleaks-batch-resource.json \
   timeout 180 "$GITLEAKS_BIN" dir generated/benchmark/cases \
-    --no-banner --exit-code 0 --redact=100 --report-format json --report-path results/raw/gitleaks.json \
+    --no-banner --exit-code 0 --redact=100 --report-format json --report-path "$gitleaks_unredacted" \
     > results/raw/gitleaks-stdout.txt 2> results/raw/gitleaks-stderr.txt
 gitleaks_status=$?
 
@@ -44,12 +45,13 @@ mapfile -d '' benchmark_files < <(find generated/benchmark/cases -type f -print0
 detect_secrets_status=$?
 set -e
 
-[[ -s results/raw/gitleaks.json ]] || echo '[]' > results/raw/gitleaks.json
+[[ -s "$gitleaks_unredacted" ]] || echo '[]' > "$gitleaks_unredacted"
 [[ -s "$trufflehog_unredacted" ]] || : > "$trufflehog_unredacted"
 [[ -s results/raw/detect-secrets.json ]] || echo '{"results":{}}' > results/raw/detect-secrets.json
 
+python scripts/redact_gitleaks.py --input "$gitleaks_unredacted" --output results/raw/gitleaks.json
 python scripts/redact_trufflehog.py --input "$trufflehog_unredacted" --output results/raw/trufflehog.jsonl
-rm -f "$trufflehog_unredacted"
+rm -f "$gitleaks_unredacted" "$trufflehog_unredacted"
 trap - EXIT
 
 printf '%s\n' "$gitleaks_status" > results/raw/gitleaks-exit-code.txt
