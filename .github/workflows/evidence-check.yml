@@ -81,14 +81,16 @@ jobs:
           manifest = json.loads(Path('evidence/evidence-manifest.json').read_text())
           metrics = json.loads(Path('results/metrics/metrics.json').read_text())
           summary = json.loads(Path('generated/benchmark/summary.json').read_text())
-          run = json.loads(Path('evidence/formal-run/run.json').read_text())['selection']
+          run = json.loads(Path('evidence/formal-run/run.json').read_text())
           artifact = json.loads(Path('evidence/formal-run/artifact.json').read_text())
 
           assert manifest['benchmark_manifest_sha256'] == summary['manifest_sha256']
           assert str(manifest['formal_run_id']) == str(run['id'])
-          assert artifact['workflow_run_id'] == str(run['id'])
-          assert artifact['execution_head_sha'] == run['head_sha']
+          assert artifact['workflow_run']['id'] == run['id']
+          assert artifact['authoritative_execution_sha'] == run['head_sha']
           assert manifest['protocol_freeze_commit'] == artifact['protocol_freeze_sha']
+          assert str(manifest['artifact_id']) == str(artifact['id'])
+          assert manifest['artifact_digest'] == artifact['digest']
           assert manifest['independent_review'] == 'NOT_AVAILABLE'
           assert metrics['primary_comparison'] == 'gitleaks versus keyword-regex-baseline'
 
