@@ -1,0 +1,60 @@
+name: Reproducibility check
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  reproduce:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.13.14'
+
+      - name: Regenerate benchmark manifest
+        run: |
+          set -euo pipefail
+          python benchmark/generate_benchmark.py --output /tmp/reproduced-benchmark
+          diff -u generated/benchmark/summary.json /tmp/reproduced-benchmark/summary.json
+          diff -u generated/benchmark/manifest.jsonl /tmp/reproduced-benchmark/manifest.jsonl
+
+      - name: Recompute baselines
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/reproduced-results
+          python baselines/run_baselines.py \
+            --benchmark-root /tmp/reproduced-benchmark \
+            --output-dir /tmp/reproduced-results
+          diff -u results/normalized/no-security-tool.jsonl /tmp/reproduced-results/no-security-tool.jsonl
+          diff -u results/normalized/keyword-regex-baseline.jsonl /tmp/reproduced-results/keyword-regex-baseline.jsonl
+
+      - name: Recompute frozen primary metrics
+        run: |
+          set -euo pipefail
+          cp results/normalized/gitleaks.jsonl /tmp/reproduced-results/
+          cp results/normalized/trufflehog.jsonl /tmp/reproduced-results/
+          cp results/normalized/detect-secrets.jsonl /tmp/reproduced-results/
+          python analysis/compute_metrics.py \
+            --manifest /tmp/reproduced-benchmark/manifest.jsonl \
+            --results-dir /tmp/reproduced-results \
+            --output /tmp/reproduced-metrics.json
+          diff -u results/metrics/metrics.json /tmp/reproduced-metrics.json
+
+      - name: Recompute reporting-only secondary tables
+        run: |
+          set -euo pipefail
+          python reporting/secondary_subgroup_analysis.py \
+            --manifest generated/benchmark/manifest.jsonl \
+            --results-dir results/normalized \
+            --output /tmp/reproduced-secondary.json
+          diff -u results/metrics/secondary-subgroups.json /tmp/reproduced-secondary.json
