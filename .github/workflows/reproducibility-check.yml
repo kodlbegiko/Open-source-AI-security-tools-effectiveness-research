@@ -115,7 +115,7 @@ jobs:
           manifest = {r['case_id']: r for r in rows('generated/benchmark/manifest.jsonl')}
           baseline = {r['case_id']: r for r in rows('results/normalized/keyword-regex-baseline.jsonl')}
           tool = {r['case_id']: r for r in rows('results/normalized/gitleaks.jsonl')}
-          unsafe = [case_id for case_id, case in manifest.items() if case['split'] == 'confirmatory' and case['label'] == 'UNSAFE']
+          unsafe = [case_id for case_id, case in manifest.items() if case['split'] == 'confirmatory' and case['risk_label'] == 'UNSAFE']
           assert len(unsafe) == 240
 
           baseline_blocks = sum(baseline[c]['decision'] == 'BLOCK' for c in unsafe)
