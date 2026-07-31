@@ -1,0 +1,4 @@
+tool,problem_importance_15,claim_testability_10,deployment_relevance_10,execution_feasibility_10,open_source_version_fixability_10,evidence_gap_10,tool_comparability_10,credible_ground_truth_10,cross_language_value_5,reproducibility_5,safety_ethics_5,total_100,selection
+Gitleaks 8.30.1,14,10,10,10,10,9,10,9,3,5,5,95,SELECTED
+TruffleHog 3.96.0,14,10,10,10,8,9,10,9,3,4,4,91,SELECTED
+detect-secrets 1.5.0,14,10,9,10,10,9,10,9,3,4,5,93,SELECTED
