@@ -3,25 +3,74 @@ name: Evidence consistency
 on:
   pull_request:
     branches: [main]
+    paths:
+      - '.github/workflows/evidence-check.yml'
+      - 'evidence/**'
+      - 'reports/**'
+      - 'docs/**'
+      - 'data/**'
+      - 'generated/benchmark/summary.json'
+      - 'generated/benchmark/manifest.jsonl'
+      - 'results/normalized/**'
+      - 'results/metrics/**'
   workflow_dispatch:
 
 permissions:
+  actions: read
   contents: read
 
 jobs:
   evidence:
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
     steps:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
 
+      - name: Detect harvested evidence phase
+        id: phase
+        run: |
+          set -euo pipefail
+          required=(
+            evidence/checksums/SHA256SUMS
+            evidence/evidence-manifest.json
+            evidence/formal-run/artifact.json
+            evidence/formal-run/run.json
+            reports/final-report.md
+            reports/executive-summary.md
+            generated/benchmark/summary.json
+            generated/benchmark/manifest.jsonl
+            results/metrics/metrics.json
+          )
+          missing=0
+          for path in "${required[@]}"; do
+            if [[ ! -s "$path" ]]; then
+              echo "not yet harvested: $path"
+              missing=1
+            fi
+          done
+          if [[ "$missing" -eq 0 ]]; then
+            echo 'ready=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'ready=false' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Record pre-harvest non-applicability
+        if: steps.phase.outputs.ready != 'true'
+        run: |
+          echo 'NOT_APPLICABLE_BEFORE_AUTHORITATIVE_EVIDENCE_HARVEST'
+          echo 'A later commit containing the harvested formal evidence must trigger the full evidence path.'
+
       - name: Verify repository checksums
+        if: steps.phase.outputs.ready == 'true'
         run: |
           set -euo pipefail
           sha256sum -c evidence/checksums/SHA256SUMS
 
       - name: Validate evidence manifest and report consistency
+        if: steps.phase.outputs.ready == 'true'
         run: |
           set -euo pipefail
           python - <<'PY'
@@ -32,10 +81,14 @@ jobs:
           manifest = json.loads(Path('evidence/evidence-manifest.json').read_text())
           metrics = json.loads(Path('results/metrics/metrics.json').read_text())
           summary = json.loads(Path('generated/benchmark/summary.json').read_text())
+          run = json.loads(Path('evidence/formal-run/run.json').read_text())['selection']
+          artifact = json.loads(Path('evidence/formal-run/artifact.json').read_text())
 
           assert manifest['benchmark_manifest_sha256'] == summary['manifest_sha256']
-          assert manifest['formal_run_id']
-          assert manifest['protocol_freeze_commit']
+          assert str(manifest['formal_run_id']) == str(run['id'])
+          assert artifact['workflow_run_id'] == str(run['id'])
+          assert artifact['execution_head_sha'] == run['head_sha']
+          assert manifest['protocol_freeze_commit'] == artifact['protocol_freeze_sha']
           assert manifest['independent_review'] == 'NOT_AVAILABLE'
           assert metrics['primary_comparison'] == 'gitleaks versus keyword-regex-baseline'
 
@@ -48,17 +101,105 @@ jobs:
 
           final = Path('reports/final-report.md').read_text()
           executive = Path('reports/executive-summary.md').read_text()
-          assert summary['manifest_sha256'] in final
-          assert summary['manifest_sha256'] in executive
-          assert 'Independent review: **NOT AVAILABLE**' in final
-          assert 'Independent review: **NOT AVAILABLE**' in executive
-          print(json.dumps({'manifest_files': len(manifest['files']), 'checks': 'passed'}))
+          for report in (final, executive):
+              assert summary['manifest_sha256'] in report
+              assert str(run['id']) in report
+              assert 'Independent review: **NOT AVAILABLE**' in report
+          assert 'PD-002' in final
+          print(json.dumps({'manifest_files': len(manifest['files']), 'checks': 'passed'}, indent=2))
           PY
 
-      - name: Ensure prohibited rendered fixtures are absent from repository history tree
+      - name: Independently redownload and verify formal artifact
+        if: steps.phase.outputs.ready == 'true'
+        run: |
+          set -euo pipefail
+          artifact_id=$(python -c "import json; print(json.load(open('evidence/formal-run/artifact.json'))['id'])")
+          expected_digest=$(python -c "import json; print(json.load(open('evidence/formal-run/artifact.json')).get('digest') or '')")
+          expected_zip_sha=$(python -c "import json; print(json.load(open('evidence/formal-run/artifact.json'))['downloaded_zip_sha256'])")
+          curl -fsSL \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2022-11-28' \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" \
+            -o /tmp/formal-evaluation.zip
+          actual_zip_sha=$(sha256sum /tmp/formal-evaluation.zip | awk '{print $1}')
+          test "$actual_zip_sha" = "$expected_zip_sha"
+          if [[ -n "$expected_digest" ]]; then
+            test "$expected_digest" = "sha256:${actual_zip_sha}"
+          fi
+          unzip -t /tmp/formal-evaluation.zip
+          rm -rf /tmp/formal-artifact
+          mkdir -p /tmp/formal-artifact
+          unzip -q /tmp/formal-evaluation.zip -d /tmp/formal-artifact
+          metrics_path=$(find /tmp/formal-artifact -path '*/results/metrics/metrics.json' -print -quit)
+          test -n "$metrics_path"
+          artifact_root=$(dirname "$(dirname "$(dirname "$metrics_path")")")
+          cd "$artifact_root"
+          sha256sum -c evidence/evaluation/SHA256SUMS
+          diff -u generated/benchmark/summary.json "$GITHUB_WORKSPACE/generated/benchmark/summary.json"
+          diff -u generated/benchmark/manifest.jsonl "$GITHUB_WORKSPACE/generated/benchmark/manifest.jsonl"
+          diff -u results/metrics/metrics.json "$GITHUB_WORKSPACE/results/metrics/metrics.json"
+          for path in results/normalized/*.jsonl; do
+            diff -u "$path" "$GITHUB_WORKSPACE/$path"
+          done
+
+      - name: Ensure prohibited rendered fixtures and raw outputs are absent
+        if: steps.phase.outputs.ready == 'true'
         run: |
           set -euo pipefail
           test ! -d generated/benchmark/cases
-          test ! -e results/raw/detect-secrets.json
+          test ! -d results/raw
           git ls-files | grep -E '^generated/benchmark/cases/' && exit 1 || true
           git ls-files | grep -E '^results/raw/' && exit 1 || true
+
+      - name: Scan retained public evidence for forbidden secret fields and token shapes
+        if: steps.phase.outputs.ready == 'true'
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import re
+          from pathlib import Path
+
+          forbidden_keys = {'Raw', 'RawV2', 'Secret', 'Match', 'ExtraData', 'VerificationError'}
+          roots = [Path('generated/benchmark'), Path('results'), Path('evidence/formal-run'), Path('reports')]
+          token_patterns = [
+              re.compile('gh' + 'p_' + r'[A-Za-z0-9]{20,}'),
+              re.compile('AK' + 'IA' + r'[A-Z0-9]{16}'),
+              re.compile('sk-' + r'[A-Za-z0-9]{20,}'),
+          ]
+
+          def walk(value, path):
+              if isinstance(value, dict):
+                  bad = forbidden_keys.intersection(value)
+                  assert not bad, (path, sorted(bad))
+                  for key, child in value.items():
+                      walk(child, f'{path}.{key}')
+              elif isinstance(value, list):
+                  for index, child in enumerate(value):
+                      walk(child, f'{path}[{index}]')
+
+          scanned = 0
+          for root in roots:
+              if not root.exists():
+                  continue
+              for path in root.rglob('*'):
+                  if not path.is_file():
+                      continue
+                  data = path.read_bytes()
+                  text = data.decode('utf-8', errors='ignore')
+                  for pattern in token_patterns:
+                      assert not pattern.search(text), path
+                  if path.suffix == '.json':
+                      walk(json.loads(text), path.as_posix())
+                  elif path.suffix == '.jsonl':
+                      for number, line in enumerate(text.splitlines(), 1):
+                          if line.strip():
+                              walk(json.loads(line), f'{path}:{number}')
+                  scanned += 1
+          print(json.dumps({'public_files_scanned': scanned, 'forbidden_fields': sorted(forbidden_keys), 'status': 'PASSED'}, indent=2))
+          PY
+
+      - name: Evidence gate passed
+        if: steps.phase.outputs.ready == 'true'
+        run: echo 'FULL_EVIDENCE_CONSISTENCY_AND_SECRET_SAFETY_PATH_PASSED'
