@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Node.js
+node_modules/
+npm-debug.log*
+
+# Environment and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Build and reports
+build/
+dist/
+coverage.xml
+htmlcov/
+
+# OS and editors
+.DS_Store
+.idea/
+.vscode/
+
+# Local research outputs
+results/local/
+evidence/local/
+*.log
