@@ -1,0 +1,146 @@
+{
+  "schema_version": "1.0",
+  "purpose": "Discovery landscape only. Inclusion here does not imply formal evaluation.",
+  "candidates": [
+    {
+      "name": "LLM Guard",
+      "repository": "protectai/llm-guard",
+      "category": "Input and Output Guardrails",
+      "tool_type": "classifier_and_rule_pipeline",
+      "primary_task": "scan LLM prompts and outputs"
+    },
+    {
+      "name": "NeMo Guardrails",
+      "repository": "NVIDIA-NeMo/Guardrails",
+      "category": "Input and Output Guardrails",
+      "tool_type": "guardrail_orchestration_framework",
+      "primary_task": "define and execute conversational guardrails"
+    },
+    {
+      "name": "Guardrails AI",
+      "repository": "guardrails-ai/guardrails",
+      "category": "Model Output Validation",
+      "tool_type": "validation_framework",
+      "primary_task": "validate and structure model outputs"
+    },
+    {
+      "name": "Rebuff",
+      "repository": "protectai/rebuff",
+      "category": "Prompt Injection Detection",
+      "tool_type": "prompt_injection_detector",
+      "primary_task": "detect prompt injection attempts"
+    },
+    {
+      "name": "Microsoft Presidio",
+      "repository": "microsoft/presidio",
+      "category": "PII and Sensitive Data Detection",
+      "tool_type": "pii_detection_and_anonymization",
+      "primary_task": "detect and anonymize personally identifiable information"
+    },
+    {
+      "name": "scrubadub",
+      "repository": "LeapBeyond/scrubadub",
+      "category": "PII and Sensitive Data Detection",
+      "tool_type": "pii_text_scrubber",
+      "primary_task": "remove personally identifiable information from text"
+    },
+    {
+      "name": "Gitleaks",
+      "repository": "gitleaks/gitleaks",
+      "category": "Secret and Credential Leakage Detection",
+      "tool_type": "secret_scanner",
+      "primary_task": "detect secrets in files and repositories"
+    },
+    {
+      "name": "TruffleHog",
+      "repository": "trufflesecurity/trufflehog",
+      "category": "Secret and Credential Leakage Detection",
+      "tool_type": "secret_scanner",
+      "primary_task": "discover and optionally verify exposed credentials"
+    },
+    {
+      "name": "detect-secrets",
+      "repository": "Yelp/detect-secrets",
+      "category": "Secret and Credential Leakage Detection",
+      "tool_type": "secret_scanner",
+      "primary_task": "detect secrets and maintain baselines"
+    },
+    {
+      "name": "ModelScan",
+      "repository": "protectai/modelscan",
+      "category": "AI Model and Dependency Supply Chain Security",
+      "tool_type": "model_artifact_scanner",
+      "primary_task": "scan machine-learning model files for unsafe content"
+    },
+    {
+      "name": "Fickling",
+      "repository": "trailofbits/fickling",
+      "category": "AI Model and Dependency Supply Chain Security",
+      "tool_type": "pickle_analysis_and_rewriting",
+      "primary_task": "analyze and transform Python pickle files"
+    },
+    {
+      "name": "safetensors",
+      "repository": "huggingface/safetensors",
+      "category": "AI Model and Dependency Supply Chain Security",
+      "tool_type": "safe_model_serialization_format",
+      "primary_task": "store tensors without executable pickle semantics"
+    },
+    {
+      "name": "Bandit",
+      "repository": "PyCQA/bandit",
+      "category": "AI-Generated Code Security Scanning",
+      "tool_type": "python_static_analyzer",
+      "primary_task": "find common security issues in Python code"
+    },
+    {
+      "name": "Semgrep",
+      "repository": "semgrep/semgrep",
+      "category": "AI-Generated Code Security Scanning",
+      "tool_type": "multi_language_static_analyzer",
+      "primary_task": "scan source code with structural rules"
+    },
+    {
+      "name": "OSV-Scanner",
+      "repository": "google/osv-scanner",
+      "category": "AI Model and Dependency Supply Chain Security",
+      "tool_type": "dependency_vulnerability_scanner",
+      "primary_task": "identify known vulnerabilities in dependencies"
+    },
+    {
+      "name": "garak",
+      "repository": "NVIDIA/garak",
+      "category": "AI Red-Team and Evaluation Frameworks",
+      "tool_type": "llm_vulnerability_scanner",
+      "primary_task": "probe language models for failure modes"
+    },
+    {
+      "name": "promptfoo",
+      "repository": "promptfoo/promptfoo",
+      "category": "AI Red-Team and Evaluation Frameworks",
+      "tool_type": "evaluation_and_red_team_framework",
+      "primary_task": "test and red-team LLM applications"
+    },
+    {
+      "name": "PyRIT",
+      "repository": "microsoft/PyRIT",
+      "category": "AI Red-Team and Evaluation Frameworks",
+      "tool_type": "generative_ai_red_team_framework",
+      "primary_task": "orchestrate risk identification and red-team tests"
+    },
+    {
+      "name": "Giskard",
+      "repository": "Giskard-AI/giskard",
+      "category": "AI Red-Team and Evaluation Frameworks",
+      "tool_type": "model_testing_framework",
+      "primary_task": "test ML and LLM applications for quality and security risks"
+    },
+    {
+      "name": "PurpleLlama",
+      "repository": "meta-llama/PurpleLlama",
+      "category": "AI Red-Team and Evaluation Frameworks",
+      "tool_type": "safety_evaluation_toolkit",
+      "primary_task": "provide tools and evaluations for responsible generative AI development"
+    }
+  ]
+}
