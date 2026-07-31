@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/redaction-compatibility.yml'
+      - 'scripts/redact_trufflehog.py'
   workflow_dispatch:
 
 permissions:
@@ -42,15 +43,18 @@ jobs:
         run: |
           set -euo pipefail
           /tmp/tools/gitleaks/gitleaks dir /tmp/fixture --no-banner --exit-code 0 --redact=100 --report-format json --report-path /tmp/gitleaks.json
-          /tmp/tools/trufflehog/trufflehog filesystem /tmp/fixture --no-verification --redact --json > /tmp/trufflehog.jsonl
+          /tmp/tools/trufflehog/trufflehog filesystem /tmp/fixture --no-verification --json > /tmp/trufflehog-unredacted.jsonl
+          python scripts/redact_trufflehog.py --input /tmp/trufflehog-unredacted.jsonl --output /tmp/trufflehog-redacted.jsonl
+          rm -f /tmp/trufflehog-unredacted.jsonl
           python - <<'PY'
           import json
           from pathlib import Path
           gitleaks = json.loads(Path('/tmp/gitleaks.json').read_text())
-          trufflehog = [json.loads(line) for line in Path('/tmp/trufflehog.jsonl').read_text().splitlines() if line.strip()]
+          trufflehog = [json.loads(line) for line in Path('/tmp/trufflehog-redacted.jsonl').read_text().splitlines() if line.strip()]
           assert gitleaks, 'Gitleaks produced no finding'
           assert trufflehog, 'TruffleHog produced no finding'
           serialized = json.dumps({'gitleaks': gitleaks, 'trufflehog': trufflehog})
           assert 'ghp_' not in serialized
+          assert '[REDACTED]' in serialized
           print(json.dumps({'gitleaks_findings': len(gitleaks), 'trufflehog_findings': len(trufflehog), 'raw_token_absent': True}))
           PY
