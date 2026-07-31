@@ -221,7 +221,7 @@ The pilot split contains {summary['splits']['pilot']} artifacts. Pilot was used 
         claim_rows.append({"tool": DISPLAY[tool], "claim": "Detect secrets in files or repositories", "testable_interpretation": "Artifact-level BLOCK on policy-defined unsafe fixtures", "result_attack_block_rate": m["attack_block_rate"], "result_benign_block_rate": m["benign_block_rate"], "verdict": decision, "caveat": "Synthetic benchmark; live validity not tested"})
     (reports / "claim-verification.md").write_text("\n".join(claim_lines) + "\n", encoding="utf-8")
     with (data / "claim-verification.csv").open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=list(claim_rows[0]))
+        writer = csv.DictWriter(handle, fieldnames=list(claim_rows[0]), lineterminator="\n")
         writer.writeheader()
         writer.writerows(claim_rows)
 
