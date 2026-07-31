@@ -16,23 +16,32 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
-      - name: Query authoritative harvest runs
+      - name: Query recent repository workflow runs
         run: |
           set -euo pipefail
-          gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/harvest-authoritative.yml/runs?per_page=20" > /tmp/runs.json
+          gh api "repos/${GITHUB_REPOSITORY}/actions/runs?per_page=100" > /tmp/runs.json
           python - <<'PY'
           import json
+          wanted = {
+              'Patch reporting newline and dispatch harvest',
+              'Harvest authoritative formal evidence',
+              'Harvest formal evaluation results',
+              'Harvest status probe',
+          }
           runs = json.load(open('/tmp/runs.json')).get('workflow_runs', [])
-          print(json.dumps([
-              {
+          selected = []
+          for run in runs:
+              if run.get('name') not in wanted:
+                  continue
+              selected.append({
                   'id': run['id'],
+                  'name': run.get('name'),
                   'event': run['event'],
                   'head_sha': run['head_sha'],
                   'status': run['status'],
                   'conclusion': run.get('conclusion'),
                   'url': run['html_url'],
                   'created_at': run['created_at'],
-              }
-              for run in runs
-          ], indent=2))
+              })
+          print(json.dumps(selected, indent=2))
           PY
