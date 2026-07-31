@@ -4,25 +4,28 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-from typing import Any
-
-SENSITIVE_KEYS = {
-    "Raw",
-    "RawV2",
-    "ExtraData",
-    "VerificationError",
-}
 
 
-def redact(value: Any) -> Any:
-    if isinstance(value, dict):
-        return {
-            key: "[REDACTED]" if key in SENSITIVE_KEYS else redact(item)
-            for key, item in value.items()
-        }
-    if isinstance(value, list):
-        return [redact(item) for item in value]
-    return value
+def project(record: dict) -> dict:
+    filesystem = (
+        record.get("SourceMetadata", {})
+        .get("Data", {})
+        .get("Filesystem", {})
+    )
+    projected = {
+        "DetectorType": record.get("DetectorType"),
+        "DetectorName": record.get("DetectorName"),
+        "DecoderName": record.get("DecoderName"),
+        "Verified": record.get("Verified"),
+        "SourceMetadata": {
+            "Data": {
+                "Filesystem": {
+                    "file": filesystem.get("file"),
+                }
+            }
+        },
+    }
+    return projected
 
 
 def main() -> int:
@@ -41,15 +44,21 @@ def main() -> int:
             if not line.strip():
                 continue
             try:
-                records.append(redact(json.loads(line)))
+                value = json.loads(line)
             except json.JSONDecodeError as exc:
                 raise SystemExit(f"invalid JSONL at line {line_number}: {exc}") from exc
+            if not isinstance(value, dict):
+                raise SystemExit(f"record at line {line_number} is not an object")
+            records.append(project(value))
 
     output_path.write_text(
         "".join(json.dumps(record, sort_keys=True) + "\n" for record in records),
         encoding="utf-8",
     )
-    print(json.dumps({"records": len(records), "sensitive_keys": sorted(SENSITIVE_KEYS)}))
+    print(json.dumps({
+        "records": len(records),
+        "retained_fields": ["DetectorType", "DetectorName", "DecoderName", "Verified", "SourceMetadata.Data.Filesystem.file"],
+    }))
     return 0
 
 
