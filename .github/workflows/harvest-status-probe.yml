@@ -1,0 +1,38 @@
+name: Harvest status probe
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/harvest-status-probe.yml'
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-24.04
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Query authoritative harvest runs
+        run: |
+          set -euo pipefail
+          gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/harvest-authoritative.yml/runs?per_page=20" > /tmp/runs.json
+          python - <<'PY'
+          import json
+          runs = json.load(open('/tmp/runs.json')).get('workflow_runs', [])
+          print(json.dumps([
+              {
+                  'id': run['id'],
+                  'event': run['event'],
+                  'head_sha': run['head_sha'],
+                  'status': run['status'],
+                  'conclusion': run.get('conclusion'),
+                  'url': run['html_url'],
+                  'created_at': run['created_at'],
+              }
+              for run in runs
+          ], indent=2))
+          PY
