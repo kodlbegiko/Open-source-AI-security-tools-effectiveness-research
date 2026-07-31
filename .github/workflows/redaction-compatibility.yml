@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/redaction-compatibility.yml'
+      - 'scripts/redact_gitleaks.py'
       - 'scripts/redact_trufflehog.py'
   workflow_dispatch:
 
@@ -39,26 +40,28 @@ jobs:
           Path('/tmp/fixture/sample.txt').write_text('github_token = ' + value + '\n')
           PY
 
-      - name: Verify redacted output modes
+      - name: Verify structural redaction
         run: |
           set -euo pipefail
-          /tmp/tools/gitleaks/gitleaks dir /tmp/fixture --no-banner --exit-code 0 --redact=100 --report-format json --report-path /tmp/gitleaks.json
+          /tmp/tools/gitleaks/gitleaks dir /tmp/fixture --no-banner --exit-code 0 --redact=100 --report-format json --report-path /tmp/gitleaks-unredacted.json
           /tmp/tools/trufflehog/trufflehog filesystem /tmp/fixture --no-verification --json > /tmp/trufflehog-unredacted.jsonl
+          python scripts/redact_gitleaks.py --input /tmp/gitleaks-unredacted.json --output /tmp/gitleaks-redacted.json
           python scripts/redact_trufflehog.py --input /tmp/trufflehog-unredacted.jsonl --output /tmp/trufflehog-redacted.jsonl
-          rm -f /tmp/trufflehog-unredacted.jsonl
+          rm -f /tmp/gitleaks-unredacted.json /tmp/trufflehog-unredacted.jsonl
           python - <<'PY'
           import hashlib
           import json
           from pathlib import Path
 
           token = 'gh' + 'p_' + hashlib.sha256(b'redaction-preflight').hexdigest()[:36]
-          gitleaks = json.loads(Path('/tmp/gitleaks.json').read_text())
+          gitleaks = json.loads(Path('/tmp/gitleaks-redacted.json').read_text())
           trufflehog = [json.loads(line) for line in Path('/tmp/trufflehog-redacted.jsonl').read_text().splitlines() if line.strip()]
           assert gitleaks, 'Gitleaks produced no finding'
           assert trufflehog, 'TruffleHog produced no finding'
           serialized = json.dumps({'gitleaks': gitleaks, 'trufflehog': trufflehog}, sort_keys=True)
           assert token not in serialized, 'exact synthetic token remains in retained output'
-          assert any(record.get('Raw') == '[REDACTED]' for record in trufflehog), 'TruffleHog Raw field was not structurally redacted'
-          assert all(record.get('RawV2') == '[REDACTED]' for record in trufflehog if 'RawV2' in record), 'TruffleHog RawV2 field was not structurally redacted'
+          assert all('Secret' not in record and 'Match' not in record for record in gitleaks)
+          assert any(record.get('Raw') == '[REDACTED]' for record in trufflehog)
+          assert all(record.get('RawV2') == '[REDACTED]' for record in trufflehog if 'RawV2' in record)
           print(json.dumps({'gitleaks_findings': len(gitleaks), 'trufflehog_findings': len(trufflehog), 'exact_raw_token_absent': True}))
           PY
