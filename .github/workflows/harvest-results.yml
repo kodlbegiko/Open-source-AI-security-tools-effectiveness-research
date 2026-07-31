@@ -1,0 +1,150 @@
+name: Harvest formal evaluation results
+
+on:
+  push:
+    branches: [research/effectiveness-study]
+    paths:
+      - '.github/workflows/harvest-results.yml'
+      - 'reporting/**'
+      - 'evidence/protocol-deviation-001.json'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: harvest-formal-evaluation-results
+  cancel-in-progress: false
+
+jobs:
+  harvest:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout research branch
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: research/effectiveness-study
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Locate protocol freeze and formal run
+        id: formal
+        run: |
+          set -euo pipefail
+          freeze_sha=$(git log --all --grep='^research: freeze effectiveness evaluation protocol$' -1 --format='%H')
+          test -n "$freeze_sha"
+          echo "freeze_sha=$freeze_sha" >> "$GITHUB_OUTPUT"
+
+          for attempt in $(seq 1 90); do
+            gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/evaluation.yml/runs?event=pull_request&per_page=100" > /tmp/evaluation-runs.json
+            python - "$freeze_sha" <<'PY' > /tmp/formal-selection.json
+          import json, sys
+          freeze = sys.argv[1]
+          runs = json.load(open('/tmp/evaluation-runs.json')).get('workflow_runs', [])
+          matches = [r for r in runs if r.get('head_sha') == freeze]
+          if not matches:
+              print(json.dumps({'found': False, 'status': 'missing'}))
+          else:
+              run = max(matches, key=lambda item: item['id'])
+              print(json.dumps({
+                  'found': True,
+                  'id': run['id'],
+                  'status': run['status'],
+                  'conclusion': run.get('conclusion'),
+                  'url': run['html_url'],
+                  'head_sha': run['head_sha'],
+              }))
+          PY
+            status=$(python -c "import json; print(json.load(open('/tmp/formal-selection.json')).get('status'))")
+            if [[ "$status" == completed ]]; then
+              break
+            fi
+            sleep 10
+          done
+
+          cat /tmp/formal-selection.json
+          python - <<'PY'
+          import json
+          selection = json.load(open('/tmp/formal-selection.json'))
+          assert selection.get('found'), 'formal evaluation run not found for freeze SHA'
+          assert selection.get('status') == 'completed', selection
+          assert selection.get('conclusion') == 'success', selection
+          PY
+          run_id=$(python -c "import json; print(json.load(open('/tmp/formal-selection.json'))['id'])")
+          run_url=$(python -c "import json; print(json.load(open('/tmp/formal-selection.json'))['url'])")
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+          echo "run_url=$run_url" >> "$GITHUB_OUTPUT"
+
+      - name: Download exact formal artifact
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/formal-download
+          gh run download "${{ steps.formal.outputs.run_id }}" --dir /tmp/formal-download
+          metrics_path=$(find /tmp/formal-download -path '*/results/metrics/metrics.json' -print -quit)
+          test -n "$metrics_path"
+          artifact_root=$(dirname "$(dirname "$(dirname "$metrics_path")")")
+          echo "$artifact_root" > /tmp/artifact-root
+          cd "$artifact_root"
+          sha256sum -c evidence/evaluation/SHA256SUMS
+          gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${{ steps.formal.outputs.run_id }}/artifacts" > /tmp/formal-artifacts.json
+
+      - name: Copy public-safe derived evidence
+        run: |
+          set -euo pipefail
+          artifact_root=$(cat /tmp/artifact-root)
+          rm -rf results/normalized results/metrics generated/benchmark
+          mkdir -p results/normalized results/metrics generated/benchmark evidence/formal-run
+          cp "$artifact_root"/results/normalized/*.jsonl results/normalized/
+          cp "$artifact_root"/results/metrics/* results/metrics/
+          cp "$artifact_root"/generated/benchmark/manifest.jsonl generated/benchmark/
+          cp "$artifact_root"/generated/benchmark/summary.json generated/benchmark/
+          cp /tmp/formal-selection.json evidence/formal-run/run.json
+          cp /tmp/formal-artifacts.json evidence/formal-run/artifacts.json
+          cp "$artifact_root"/evidence/evaluation/runner-environment.txt evidence/formal-run/
+          cp "$artifact_root"/evidence/evaluation/python-freeze.txt evidence/formal-run/
+          cp "$artifact_root"/evidence/evaluation/SHA256SUMS evidence/formal-run/artifact-SHA256SUMS
+
+      - name: Derive prespecified secondary tables
+        run: |
+          set -euo pipefail
+          python reporting/secondary_subgroup_analysis.py \
+            --manifest generated/benchmark/manifest.jsonl \
+            --results-dir results/normalized \
+            --output results/metrics/secondary-subgroups.json
+
+      - name: Build reports from frozen evidence
+        run: |
+          set -euo pipefail
+          artifact_root=$(cat /tmp/artifact-root)
+          python reporting/build_reports.py \
+            --artifact-root "$artifact_root" \
+            --output-root "$GITHUB_WORKSPACE" \
+            --freeze-sha "${{ steps.formal.outputs.freeze_sha }}" \
+            --run-id "${{ steps.formal.outputs.run_id }}" \
+            --run-url "${{ steps.formal.outputs.run_url }}"
+
+      - name: Create repository checksums
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/checksums
+          find generated/benchmark results/normalized results/metrics reports docs data evidence/formal-run \
+            -type f -print0 | sort -z | xargs -0 sha256sum > evidence/checksums/SHA256SUMS
+          sha256sum -c evidence/checksums/SHA256SUMS
+
+      - name: Commit formal results and reports
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add generated/benchmark results/normalized results/metrics reports docs data evidence
+          git diff --cached --check
+          if git diff --cached --quiet; then
+            echo 'No result changes to commit.'
+            exit 0
+          fi
+          git commit -m 'research: add formal evaluation results'
+          git push origin HEAD:research/effectiveness-study
