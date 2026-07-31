@@ -1,0 +1,29 @@
+{
+  "deviation_id": "PD-002",
+  "date_utc": "2026-07-31",
+  "stage": "post-freeze post-outcome operational repair",
+  "affected_files": [
+    "scripts/run_evaluation.sh",
+    ".github/workflows/harvest-results.yml",
+    ".github/workflows/reproducibility-check.yml",
+    ".github/workflows/evidence-check.yml"
+  ],
+  "formal_outcomes_inspected": true,
+  "affected_primary_endpoint": false,
+  "affected_benchmark": false,
+  "affected_labels_or_thresholds": false,
+  "affected_normalized_decisions": false,
+  "affected_statistical_method": false,
+  "issue": "The formal evaluation completed scanner execution, normalization, metrics and safety validation, but artifact publication failed because command-log.txt remained open through a tee process after SHA256SUMS was generated. Reproducibility and evidence checks also executed before harvested outputs existed in the repository.",
+  "failed_runs": {
+    "formal_evaluation": 30607078461,
+    "reproducibility": 30607078487,
+    "evidence_consistency": 30607078497
+  },
+  "resolution": "Close the finite evaluation logging pipeline before generating and verifying checksums. Select the first successful post-repair formal run on an ancestor of the research branch, harvest its exact artifact, then run reproducibility and evidence consistency only after harvested files are present.",
+  "rerun_rule": "The first successful formal evaluation run after the PD-002 operational repair is authoritative. Later runs may verify reproducibility but may not replace it based on outcome values.",
+  "bias_direction": "No expected direction. The repair changes only evidence finalization and workflow ordering; all outcome-producing source, benchmark identity, tool versions, adapters, thresholds, primary comparison, bootstrap seed and tests remain unchanged.",
+  "primary_analysis_validity": "UNCHANGED_IF_RERUN_OUTPUTS_MATCH_FROZEN_DETERMINISTIC_PIPELINE",
+  "invalidated_execution": "Run 30607078461 is invalid as release evidence because no immutable artifact was uploaded, even though its intermediate calculations completed.",
+  "required_reporting": "Report PD-002, the failed run IDs, the repair commit, the authoritative successful run ID, and an independent raw-to-metric recomputation."
+}
