@@ -7,6 +7,7 @@ on:
       - '.github/workflows/harvest-results.yml'
       - 'reporting/**'
       - 'evidence/protocol-deviation-001.json'
+      - 'evidence/protocol-deviation-002.json'
   workflow_dispatch:
 
 permissions:
@@ -15,12 +16,12 @@ permissions:
 
 concurrency:
   group: harvest-formal-evaluation-results
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   harvest:
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 25
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
@@ -31,36 +32,59 @@ jobs:
           fetch-depth: 0
           persist-credentials: true
 
-      - name: Locate protocol freeze and formal run
+      - name: Locate protocol freeze, repair and authoritative formal run
         id: formal
         run: |
           set -euo pipefail
           freeze_sha=$(git log --all --grep='^research: freeze effectiveness evaluation protocol$' -1 --format='%H')
+          repair_sha=$(git log --all --grep='^fix: freeze evaluation log before checksumming evidence$' -1 --format='%H')
           test -n "$freeze_sha"
+          test -n "$repair_sha"
           echo "freeze_sha=$freeze_sha" >> "$GITHUB_OUTPUT"
+          echo "repair_sha=$repair_sha" >> "$GITHUB_OUTPUT"
 
-          for attempt in $(seq 1 90); do
+          for attempt in $(seq 1 120); do
             gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/evaluation.yml/runs?event=pull_request&per_page=100" > /tmp/evaluation-runs.json
-            python - "$freeze_sha" <<'PY' > /tmp/formal-selection.json
-          import json, sys
-          freeze = sys.argv[1]
+            python - "$repair_sha" <<'PY' > /tmp/formal-selection.json
+          import json
+          import subprocess
+          import sys
+
+          repair = sys.argv[1]
           runs = json.load(open('/tmp/evaluation-runs.json')).get('workflow_runs', [])
-          matches = [r for r in runs if r.get('head_sha') == freeze]
-          if not matches:
-              print(json.dumps({'found': False, 'status': 'missing'}))
-          else:
-              run = max(matches, key=lambda item: item['id'])
-              print(json.dumps({
-                  'found': True,
+          candidates = []
+          for run in runs:
+              if run.get('id', 0) <= 30607078461:
+                  continue
+              if not any(pr.get('number') == 1 for pr in run.get('pull_requests', [])):
+                  continue
+              head = run.get('head_sha')
+              if not head:
+                  continue
+              after_repair = subprocess.run(['git', 'merge-base', '--is-ancestor', repair, head]).returncode == 0
+              on_branch = subprocess.run(['git', 'merge-base', '--is-ancestor', head, 'HEAD']).returncode == 0
+              if not (after_repair and on_branch):
+                  continue
+              candidates.append({
                   'id': run['id'],
                   'status': run['status'],
                   'conclusion': run.get('conclusion'),
                   'url': run['html_url'],
-                  'head_sha': run['head_sha'],
-              }))
+                  'head_sha': head,
+                  'created_at': run.get('created_at'),
+              })
+
+          successful = [r for r in candidates if r['status'] == 'completed' and r['conclusion'] == 'success']
+          selection = min(successful, key=lambda item: item['id']) if successful else None
+          print(json.dumps({
+              'found': selection is not None,
+              'selection': selection,
+              'eligible_runs': sorted(candidates, key=lambda item: item['id']),
+              'selection_rule': 'FIRST_SUCCESSFUL_POST_PD002_REPAIR_RUN',
+          }, indent=2, sort_keys=True))
           PY
-            status=$(python -c "import json; print(json.load(open('/tmp/formal-selection.json')).get('status'))")
-            if [[ "$status" == completed ]]; then
+            found=$(python -c "import json; print(str(json.load(open('/tmp/formal-selection.json'))['found']).lower())")
+            if [[ "$found" == true ]]; then
               break
             fi
             sleep 10
@@ -70,43 +94,89 @@ jobs:
           python - <<'PY'
           import json
           selection = json.load(open('/tmp/formal-selection.json'))
-          assert selection.get('found'), 'formal evaluation run not found for freeze SHA'
-          assert selection.get('status') == 'completed', selection
-          assert selection.get('conclusion') == 'success', selection
+          assert selection.get('found'), selection
+          assert selection['selection']['status'] == 'completed', selection
+          assert selection['selection']['conclusion'] == 'success', selection
           PY
-          run_id=$(python -c "import json; print(json.load(open('/tmp/formal-selection.json'))['id'])")
-          run_url=$(python -c "import json; print(json.load(open('/tmp/formal-selection.json'))['url'])")
+          run_id=$(python -c "import json; print(json.load(open('/tmp/formal-selection.json'))['selection']['id'])")
+          run_url=$(python -c "import json; print(json.load(open('/tmp/formal-selection.json'))['selection']['url'])")
+          execution_sha=$(python -c "import json; print(json.load(open('/tmp/formal-selection.json'))['selection']['head_sha'])")
           echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
           echo "run_url=$run_url" >> "$GITHUB_OUTPUT"
+          echo "execution_sha=$execution_sha" >> "$GITHUB_OUTPUT"
 
-      - name: Download exact formal artifact
+      - name: Download and verify exact formal artifact archive
+        id: artifact
         run: |
           set -euo pipefail
+          gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${{ steps.formal.outputs.run_id }}/artifacts" > /tmp/formal-artifacts.json
+          python - <<'PY' > /tmp/formal-artifact.json
+          import json
+          payload = json.load(open('/tmp/formal-artifacts.json'))
+          artifacts = [a for a in payload.get('artifacts', []) if not a.get('expired')]
+          assert len(artifacts) == 1, artifacts
+          artifact = artifacts[0]
+          assert artifact['name'].startswith('formal-evaluation-'), artifact
+          print(json.dumps(artifact, indent=2, sort_keys=True))
+          PY
+          artifact_id=$(python -c "import json; print(json.load(open('/tmp/formal-artifact.json'))['id'])")
+          artifact_name=$(python -c "import json; print(json.load(open('/tmp/formal-artifact.json'))['name'])")
+          expected_digest=$(python -c "import json; print(json.load(open('/tmp/formal-artifact.json')).get('digest') or '')")
+
+          curl -fsSL \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2022-11-28' \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" \
+            -o /tmp/formal-evaluation.zip
+          zip_sha=$(sha256sum /tmp/formal-evaluation.zip | awk '{print $1}')
+          if [[ -n "$expected_digest" ]]; then
+            test "$expected_digest" = "sha256:${zip_sha}"
+          fi
+          unzip -t /tmp/formal-evaluation.zip
+          rm -rf /tmp/formal-download
           mkdir -p /tmp/formal-download
-          gh run download "${{ steps.formal.outputs.run_id }}" --dir /tmp/formal-download
+          unzip -q /tmp/formal-evaluation.zip -d /tmp/formal-download
+
           metrics_path=$(find /tmp/formal-download -path '*/results/metrics/metrics.json' -print -quit)
           test -n "$metrics_path"
           artifact_root=$(dirname "$(dirname "$(dirname "$metrics_path")")")
           echo "$artifact_root" > /tmp/artifact-root
           cd "$artifact_root"
           sha256sum -c evidence/evaluation/SHA256SUMS
-          gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${{ steps.formal.outputs.run_id }}/artifacts" > /tmp/formal-artifacts.json
+
+          echo "artifact_id=$artifact_id" >> "$GITHUB_OUTPUT"
+          echo "artifact_name=$artifact_name" >> "$GITHUB_OUTPUT"
+          echo "artifact_zip_sha256=$zip_sha" >> "$GITHUB_OUTPUT"
+          echo "artifact_digest=$expected_digest" >> "$GITHUB_OUTPUT"
 
       - name: Copy public-safe derived evidence
         run: |
           set -euo pipefail
           artifact_root=$(cat /tmp/artifact-root)
-          rm -rf results/normalized results/metrics generated/benchmark
+          rm -rf results/normalized results/metrics generated/benchmark evidence/formal-run
           mkdir -p results/normalized results/metrics generated/benchmark evidence/formal-run
           cp "$artifact_root"/results/normalized/*.jsonl results/normalized/
           cp "$artifact_root"/results/metrics/* results/metrics/
           cp "$artifact_root"/generated/benchmark/manifest.jsonl generated/benchmark/
           cp "$artifact_root"/generated/benchmark/summary.json generated/benchmark/
           cp /tmp/formal-selection.json evidence/formal-run/run.json
-          cp /tmp/formal-artifacts.json evidence/formal-run/artifacts.json
+          cp /tmp/formal-artifact.json evidence/formal-run/artifact.json
           cp "$artifact_root"/evidence/evaluation/runner-environment.txt evidence/formal-run/
           cp "$artifact_root"/evidence/evaluation/python-freeze.txt evidence/formal-run/
+          cp "$artifact_root"/evidence/evaluation/command-log.txt evidence/formal-run/
           cp "$artifact_root"/evidence/evaluation/SHA256SUMS evidence/formal-run/artifact-SHA256SUMS
+          printf '%s  %s\n' '${{ steps.artifact.outputs.artifact_zip_sha256 }}' 'formal-evaluation.zip' > evidence/formal-run/archive-SHA256SUMS
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          record = json.load(open('/tmp/formal-artifact.json'))
+          record['downloaded_zip_sha256'] = '${{ steps.artifact.outputs.artifact_zip_sha256 }}'
+          record['workflow_run_id'] = '${{ steps.formal.outputs.run_id }}'
+          record['execution_head_sha'] = '${{ steps.formal.outputs.execution_sha }}'
+          record['protocol_freeze_sha'] = '${{ steps.formal.outputs.freeze_sha }}'
+          Path('evidence/formal-run/artifact.json').write_text(json.dumps(record, indent=2, sort_keys=True) + '\n')
+          PY
 
       - name: Derive prespecified secondary tables
         run: |
@@ -116,7 +186,7 @@ jobs:
             --results-dir results/normalized \
             --output results/metrics/secondary-subgroups.json
 
-      - name: Build reports from frozen evidence
+      - name: Build reports from authoritative evidence
         run: |
           set -euo pipefail
           artifact_root=$(cat /tmp/artifact-root)
@@ -135,6 +205,28 @@ jobs:
             -type f -print0 | sort -z | xargs -0 sha256sum > evidence/checksums/SHA256SUMS
           sha256sum -c evidence/checksums/SHA256SUMS
 
+      - name: Validate harvested evidence before commit
+        run: |
+          set -euo pipefail
+          test -s evidence/evidence-manifest.json
+          test -s reports/final-report.md
+          test -s reports/executive-summary.md
+          test -s results/metrics/metrics.json
+          test ! -d generated/benchmark/cases
+          test ! -e results/raw/detect-secrets.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          artifact = json.loads(Path('evidence/formal-run/artifact.json').read_text())
+          metrics = json.loads(Path('results/metrics/metrics.json').read_text())
+          summary = json.loads(Path('generated/benchmark/summary.json').read_text())
+          assert artifact['workflow_run_id'] == '${{ steps.formal.outputs.run_id }}'
+          assert artifact['execution_head_sha'] == '${{ steps.formal.outputs.execution_sha }}'
+          assert artifact['protocol_freeze_sha'] == '${{ steps.formal.outputs.freeze_sha }}'
+          assert summary['manifest_sha256'] == '38059b47ea3b8217df38b90a4525286a18ca37b7bc136cfbbce5227aa6f54e27'
+          assert metrics['primary_comparison'] == 'gitleaks versus keyword-regex-baseline'
+          PY
+
       - name: Commit formal results and reports
         run: |
           set -euo pipefail
@@ -146,5 +238,5 @@ jobs:
             echo 'No result changes to commit.'
             exit 0
           fi
-          git commit -m 'research: add formal evaluation results'
+          git commit -m 'research: add authoritative formal evaluation evidence'
           git push origin HEAD:research/effectiveness-study
